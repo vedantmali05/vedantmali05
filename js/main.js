@@ -37,11 +37,30 @@
   }
 
   /**
+   * Safe localStorage wrapper to prevent crash on file:// or strict sandbox environments.
+   */
+  function safeGetStorageItem(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function safeSetStorageItem(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch (_) {
+      // Ignore security errors
+    }
+  }
+
+  /**
    * Retrieves the current saved theme from LocalStorage or system preference fallback.
    * @returns {'light'|'dark'} The active theme key.
    */
   function getSavedTheme() {
-    const savedTheme = localStorage.getItem(THEME_KEYS.STORAGE_KEY);
+    const savedTheme = safeGetStorageItem(THEME_KEYS.STORAGE_KEY);
     const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     return savedTheme === THEME_KEYS.DARK || (!savedTheme && systemPrefersDark)
       ? THEME_KEYS.DARK
@@ -54,7 +73,7 @@
    */
   function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem(THEME_KEYS.STORAGE_KEY, theme);
+    safeSetStorageItem(THEME_KEYS.STORAGE_KEY, theme);
     state.theme = theme; // Update active theme in shared session state
 
     // Dispatch a global event so that project-specific layouts can update their custom theme triggers
@@ -317,6 +336,56 @@
     }, 350);
   }
 
+  /**
+   * Shows the global full-screen loader overlay.
+   * Creates the element dynamically if it doesn't already exist.
+   * @param {string} [message="Loading..."] - Optional loading message.
+   */
+  function showGlobalLoader(message = "Loading...") {
+    let loader = document.getElementById("global-loader");
+    if (!loader) {
+      loader = document.createElement("div");
+      loader.id = "global-loader";
+      loader.className = "loader-overlay";
+      loader.innerHTML = `
+        <div class="spinner sz-xlarge" style="color: var(--color-input-border-focus); margin-bottom: var(--space-md);"></div>
+        <p class="loader-text small muted" style="letter-spacing: 0.05em; font-weight: var(--fw-semibold); text-transform: uppercase; margin: 0;"></p>
+      `;
+      document.body.appendChild(loader);
+    }
+    loader.querySelector(".loader-text").textContent = message;
+    // Force repaint to allow transition to trigger
+    loader.offsetHeight;
+    loader.classList.add("active");
+  }
+
+  /**
+   * Hides the global full-screen loader overlay.
+   */
+  function hideGlobalLoader() {
+    const loader = document.getElementById("global-loader");
+    if (loader) {
+      loader.classList.remove("active");
+    }
+  }
+
+  /**
+   * Toggles the loading spinner state of a button component.
+   * @param {HTMLButtonElement|string} button - The button element or its CSS selector.
+   * @param {boolean} isLoading - Whether to set the button in a loading state.
+   */
+  function setButtonLoading(button, isLoading) {
+    const btnEl = typeof button === 'string' ? document.querySelector(button) : button;
+    if (!btnEl) return;
+    if (isLoading) {
+      btnEl.classList.add("loading");
+      btnEl.setAttribute("disabled", "true");
+    } else {
+      btnEl.classList.remove("loading");
+      btnEl.removeAttribute("disabled");
+    }
+  }
+
   // ── Bind functions & state to window namespace ────────────────
   if (typeof window !== 'undefined') {
     window.CoreUI = window.CoreUI || {};
@@ -331,6 +400,9 @@
     window.CoreUI.initDialogs = initDialogs;
     window.CoreUI.showToast = showToast;
     window.CoreUI.closeToast = closeToast;
+    window.CoreUI.showGlobalLoader = showGlobalLoader;
+    window.CoreUI.hideGlobalLoader = hideGlobalLoader;
+    window.CoreUI.setButtonLoading = setButtonLoading;
 
     // Flatten primary functions and state to window for convenient global invocation
     window.openDialog = openDialog;
@@ -340,6 +412,83 @@
     window.getSavedTheme = getSavedTheme;
     window.showToast = showToast;
     window.closeToast = closeToast;
+    window.showGlobalLoader = showGlobalLoader;
+    window.hideGlobalLoader = hideGlobalLoader;
+    window.setButtonLoading = setButtonLoading;
+
+    /**
+     * Initializes click handlers for dropdown menus and popovers,
+     * including click-outside detection and Escape key dismissal.
+     */
+    function initDropdownsAndPopovers() {
+      // Handle Click triggers for dropdowns and popovers
+      document.addEventListener("click", (e) => {
+        const dropdownTrigger = e.target.closest(".dropdown-trigger");
+        const activeDropdown = dropdownTrigger ? dropdownTrigger.closest(".dropdown") : null;
+
+        const popoverTrigger = e.target.closest(".popover-trigger[data-trigger='click']");
+        const activePopover = popoverTrigger ? popoverTrigger.closest(".popover") : null;
+
+        // Dropdown toggle logic
+        if (activeDropdown && dropdownTrigger) {
+          e.preventDefault();
+          const menu = activeDropdown.querySelector(".dropdown-menu");
+          if (menu) {
+            const isActive = menu.classList.contains("active");
+            document.querySelectorAll(".dropdown-menu.active").forEach((openMenu) => {
+              if (openMenu !== menu) openMenu.classList.remove("active");
+            });
+            if (isActive) {
+              menu.classList.remove("active");
+            } else {
+              menu.classList.add("active");
+            }
+          }
+        } else {
+          const dropdownItem = e.target.closest(".btn.menu");
+          if (!e.target.closest(".dropdown-menu") || dropdownItem) {
+            document.querySelectorAll(".dropdown-menu.active").forEach((menu) => {
+              menu.classList.remove("active");
+            });
+          }
+        }
+
+        // Popover toggle logic
+        if (activePopover && popoverTrigger) {
+          e.preventDefault();
+          const card = activePopover.querySelector(".popover-card");
+          if (card) {
+            const isActive = card.classList.contains("active");
+            document.querySelectorAll(".popover-card.active").forEach((openCard) => {
+              if (openCard !== card) openCard.classList.remove("active");
+            });
+            if (isActive) {
+              card.classList.remove("active");
+            } else {
+              card.classList.add("active");
+            }
+          }
+        } else {
+          if (!e.target.closest(".popover-card")) {
+            document.querySelectorAll(".popover-card.active").forEach((card) => {
+              card.classList.remove("active");
+            });
+          }
+        }
+      });
+
+      // Escape key to close open overlays
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          document.querySelectorAll(".dropdown-menu.active").forEach((menu) => {
+            menu.classList.remove("active");
+          });
+          document.querySelectorAll(".popover-card.active").forEach((card) => {
+            card.classList.remove("active");
+          });
+        }
+      });
+    }
 
     // Global Auto-Initialization
     detectMotionCapability();
@@ -348,10 +497,12 @@
       document.addEventListener('DOMContentLoaded', () => {
         initTheme();
         initDialogs();
+        initDropdownsAndPopovers();
       });
     } else {
       initTheme();
       initDialogs();
+      initDropdownsAndPopovers();
     }
   }
 })();

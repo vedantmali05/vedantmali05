@@ -160,3 +160,9 @@ Always map standard status colors to the following semantic classes:
 * [x] Implemented a premium dark-themed Toast Notification system in `main.css` and `main.js` with vertical stacking, status variants (.info, .success, .error, .warn), custom icons/actions, and mobile-responsive layouts.
 * [x] Standardized button component styles (.btn, .primary, .subtle, .error, .outlined, .sz-small) in `main.css` for consistent interactive UI actions.
 
+## Missing now
+* [x] Dropdown Menu (Floating): Interactive overlays containing a list of actions or links:
+Position alignment (top/bottom/left/right) relative to triggers.
+Click-outside detector to dismiss the dropdown.
+* [x] Popover / Floating Card: Popups triggered by hover/click displaying rich HTML elements (e.g., hover-cards for user profiles).
+* [x] Empty State Layout: Standardized layout with a centered layout (icon/illustration, title, description, and action button) to show when tables, lists, or search results are empty.
