@@ -13,11 +13,14 @@ Standardize and refactor a messy, disorganized, AI-generated frontend codebase b
 
 ---
 
-### 3. Core Files
-* **`main.css`**: The single source of truth for variables, reset rules, utilities, and core components (like badges, form inputs).
-* **`icons.css`**: Central source of truth for all URL-encoded offline Lucide icon mask definitions and the `.icon-lucide` base class.
-* **`showcase.css`**: Contains page-specific showcase/demo styles (sticky header, stats cards, detail cards, layout grids) to keep `main.css` clean for deployment.
-* **`standard.html`**: A showcase page used to preview typography, color palettes, theme toggles, detail cards, and form input elements.
+### 3. Core Files & Directory Structure
+* **`css/main.css`**: The single source of truth for variables, reset rules, utilities, and core components (like badges, form inputs).
+* **`css/icons.css`**: Central source of truth for all URL-encoded offline Lucide icon mask definitions and the `.icon-lucide` base class.
+* **`showcase/showcase.css`**: Contains page-specific showcase/demo styles (sticky header, stats cards, detail cards, layout grids) to keep the core styling in `css/` clean and reusable for deployment.
+* **`fonts/`**: Self-hosted font assets (Manrope font weights 400-700) for complete offline-first operation.
+* **`js/constants.js`**: Global configurations, constants, theme keys, and CSS/HTML selector mappings.
+* **`js/main.js`**: Core design system logic including motion-detection, LocalStorage-backed theme initialization, and native dialog event binders/helpers.
+* **`standard.html`**: A showcase page used to preview components, typography, color palettes, and layouts. Contains inline showcase-specific JavaScript modules (navigation, theme UI updates, and overflow debugger) to avoid polluting production JS files.
 
 ---
 
@@ -152,3 +155,8 @@ Always map standard status colors to the following semantic classes:
 * [x] Replicated Chakra UI Stat component architecture (including simple, tooltip-assisted, badge-oriented, and card panel variants) directly inside standard.html and integrated into the global design system.
 * [x] Implemented a pure-CSS tooltip component with support for top, bottom, left, and right directions, arrow alignment, and hover/focus transitions.
 * [x] Implemented a fully-spec-compliant Dialog component (7 use-case variants) using native `<dialog>` element with modal/non-modal modes, size presets (sm/md/lg/full/custom), sticky header/footer, scrollable content, slide+fade animation, mobile bottom-sheet, Esc/backdrop-click handling, and keyboard focus trapping.
+* [x] Refactored JavaScript into clean, decoupled, and reusable ES modules (`constants.js` and `main.js`), with all showcase-specific scripts moved inline to `standard.html`. The core files communicate with custom presentation elements via a decoupled CustomEvent (`themechanged`), ensuring zero dependencies and zero console errors when copying the design system into a production codebase.
+* [x] Organized codebase assets into dedicated, clean folder directories: `/css/` (containing core reusable stylesheets only, making it copy-paste ready as a standalone asset), `/js/` (containing decoupled core modules), `/fonts/` (containing self-hosted assets), and `/showcase/` (containing showcase-only stylesheets). Corrected internal and HTML-level references to prevent dependency breakage.
+* [x] Implemented a premium dark-themed Toast Notification system in `main.css` and `main.js` with vertical stacking, status variants (.info, .success, .error, .warn), custom icons/actions, and mobile-responsive layouts.
+* [x] Standardized button component styles (.btn, .primary, .subtle, .error, .outlined, .sz-small) in `main.css` for consistent interactive UI actions.
+
