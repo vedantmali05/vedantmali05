@@ -37,14 +37,19 @@ Software Developer building full-stack web/mobile platforms, IoT solutions, and 
 
 ### ⚙️ Dotfiles & Config Sync Utility
 
-CLI tool to back up, sync, and restore shell configs (`.bashrc`), custom developer tools, and agent skills across machines via GitHub.
+This repository includes a lightweight CLI tool to back up, sync, and restore configuration files across machines.
+
+Examples of tracked files include shell configs (`~/.bashrc`), agent skills, and developer tool presets, which is beneficial for maintaining a consistent dev setup across machines and backing up key configurations.
+
+#### What It Is
+A JSON-driven tool (`sync.sh` / `restore.sh`) that reads file paths from `tracked-files.json`, backs them up into structured folders in this repo, and pushes changes to GitHub.
 
 #### How To Use
-1. **Configure**: Add file targets to `tracked-files.json`.
-2. **Sync**: Run `./sync.sh .` (or `sync-repo`).
-3. **Restore**: Run `./restore.sh .`.
+1. **Configure files**: Add file targets to `tracked-files.json`.
+2. **Sync to GitHub**: Run `./sync.sh .` (or `./sync.sh <label>`).
+3. **Restore to local machine**: Run `./restore.sh .` (or `./restore.sh <label>`).
 
-See **[USAGE.md](USAGE.md)** for full details.
+For complete documentation, see **[USAGE.md](USAGE.md)**.
 
 ---
 
