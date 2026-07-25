@@ -1,39 +1,48 @@
 # 👋 Hi, I'm Vedant Mali!
 
-Welcome to my personal GitHub repository. I'm a passionate Software Developer & Full-Stack Enthusiast crafting AI agents, full-stack applications, and scalable design systems.
+Software Developer building full-stack web/mobile platforms, IoT solutions, and software systems. 
 
 ---
 
-### 🚀 Featured Projects
+### 🚀 Key Projects
 
-- 🛠️ **[Coexio](https://github.com/vedantmali05/coexio)** — Autonomous workspace & AI agent collaboration platform.
-- 🌿 **[SwachhaSetu](https://github.com/vedantmali05/SwachhaSetu)** — Environmental sustainability & smart waste management web application.
-- 🎨 **[Design System](https://github.com/vedantmali05/design-system)** — Modern, reusable UI components and design tokens.
-- ⚡ **[GenAI Tools](https://github.com/vedantmali05/genai)** — Custom AI scripts, agent tools, and prompt automation utilities.
+- **[SwachhaSetu](https://github.com/vedantmali05/SwachhaSetu)** — Smart waste management platform with AI classification & IoT fill-level monitoring. *(IEEE Scopus paper, patent, 1st prize Aavishkar 2025)*
+- **[auto-doc-sender](https://github.com/vedantmali05/auto-doc-sender)** — Python automation tool to generate personalized PDF documents and email them from Excel data.
+- **[underwater-avs-toolkit](https://github.com/vedantmali05/underwater-avs-toolkit)** — Signal processing toolkit for Excel/audio telemetry data, generating spectrograms and waveform visualizers.
 
 ---
 
 ### 🛠️ Tech Stack & Skills
 
-- **Languages:** Python, JavaScript (ES6+), TypeScript, HTML5, CSS3, C/C++
-- **Frameworks & Libraries:** React, Node.js, Express, Next.js, TailwindCSS
-- **AI & Automation:** Agentic Workflows, LLM APIs, Webhooks, CLI Tools
-- **Tools & DevOps:** Git, GitHub, Linux, Bash, Docker
+- **Backend:** Node.js, Express.js, REST APIs
+- **Frontend & Mobile:** React, React Native, Tailwind CSS, Bootstrap
+- **Databases:** MySQL, MongoDB
+- **Desktop:** Python (Eel Framework)
 
 ---
 
-### 📦 Important Config Sync & Dotfiles Backup
+### 💼 Experience
 
-> [!NOTE]
-> This repository also serves as my personal vault for key configuration files, dotfiles, and agent skills.
-> 
-> 📖 **[Read the Full How-To Sync Guide & Restore Instructions (USAGE.md)](USAGE.md)**
+- **Junior Software Developer** @ Coexio (May 2026–Present)
+- **UI/UX Design Intern** @ Accenture (Feb–Mar 2025)
+- **Software Trainee** @ Global Soft Labs (Jun–Jul 2024)
+
+---
+
+### 🏆 Leadership
+
+- **GDG On Campus Organizer** @ PRMIT&R (2024–Present) — Led 70+ team, 10+ events, 1000+ total participants. Achieved Tier 1 rank twice in Google campaigns.
+
+---
+
+### 📦 Config Sync Vault
+
+> 📖 **[Read the Config Sync & Restore Guide (USAGE.md)](USAGE.md)**
 
 ---
 
 ### 📫 Connect With Me
 
 - **GitHub:** [@vedantmali05](https://github.com/vedantmali05)
+- **LinkedIn:** [vedant-mali](https://www.linkedin.com/in/vedant-mali)
 - **Email:** [vedantmali05@gmail.com](mailto:vedantmali05@gmail.com)
-
-*Thanks for stopping by!* 🌟
