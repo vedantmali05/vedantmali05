@@ -7,7 +7,7 @@ Software Developer building full-stack web/mobile platforms, IoT solutions, and 
 ### 🚀 Key Projects
 
 - **[Coexio](https://github.com/vedantmali05/coexio)** — SCADA platform for real-time telemetry data processing, monitoring, and visualization.
-- **[underwater-avs-toolkit](https://github.com/vedantmali05/underwater-avs-toolkit)** — Signal processing toolkit for Excel/audio telemetry data, generating spectrograms and waveform visualizers.
+- **[Underwater AVS Toolkit](https://github.com/vedantmali05/underwater-avs-toolkit)** — Signal processing toolkit for Excel/audio telemetry data, generating spectrograms and waveform visualizers.
 - **[SwachhaSetu](https://github.com/vedantmali05/SwachhaSetu)** — Smart waste management platform with AI classification & IoT fill-level monitoring. *(IEEE Scopus paper, patent, 1st prize Aavishkar 2025)*
 
 ---
@@ -35,9 +35,19 @@ Software Developer building full-stack web/mobile platforms, IoT solutions, and 
 
 ---
 
-### 📦 Config Sync Vault
+### ⚙️ Dotfiles & Config Sync Utility
 
-> 📖 **[Read the Config Sync & Restore Guide (USAGE.md)](USAGE.md)**
+This repository includes a lightweight CLI tool to back up, sync, and restore configuration files across machines.
+
+#### What It Is
+A JSON-driven tool (`sync.sh` / `restore.sh`) that reads file paths from `tracked-files.json`, backs them up into structured folders in this repo, and pushes changes to GitHub.
+
+#### How To Use
+1. **Configure files**: Add file targets to `tracked-files.json`.
+2. **Sync to GitHub**: Run `./sync.sh .` (or `./sync.sh <label>`).
+3. **Restore to local machine**: Run `./restore.sh .` (or `./restore.sh <label>`).
+
+For complete documentation, see **[USAGE.md](USAGE.md)**.
 
 ---
 
