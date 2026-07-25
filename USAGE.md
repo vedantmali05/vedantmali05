@@ -18,7 +18,7 @@ All tracked file paths are defined in `tracked-files.json` in the root directory
   {
     "label": "coexio-skills",
     "file_path": "~/Projects/coexio/.agents/skill-*.md",
-    "target_dir": "coexio-agents"
+    "target_dir": "skills"
   }
 ]
 ```
