@@ -6,9 +6,9 @@ Software Developer building full-stack web/mobile platforms, IoT solutions, and 
 
 ### 🚀 Key Projects
 
-- **[SwachhaSetu](https://github.com/vedantmali05/SwachhaSetu)** — Smart waste management platform with AI classification & IoT fill-level monitoring. *(IEEE Scopus paper, patent, 1st prize Aavishkar 2025)*
-- **[auto-doc-sender](https://github.com/vedantmali05/auto-doc-sender)** — Python automation tool to generate personalized PDF documents and email them from Excel data.
+- **[Coexio](https://github.com/vedantmali05/coexio)** — SCADA platform for real-time telemetry data processing, monitoring, and visualization.
 - **[underwater-avs-toolkit](https://github.com/vedantmali05/underwater-avs-toolkit)** — Signal processing toolkit for Excel/audio telemetry data, generating spectrograms and waveform visualizers.
+- **[SwachhaSetu](https://github.com/vedantmali05/SwachhaSetu)** — Smart waste management platform with AI classification & IoT fill-level monitoring. *(IEEE Scopus paper, patent, 1st prize Aavishkar 2025)*
 
 ---
 
