@@ -1,0 +1,12 @@
+[
+  {
+    "label": "bashrc",
+    "file_path": "~/.bashrc",
+    "target_dir": "dotfiles"
+  },
+  {
+    "label": "coexio-skills",
+    "file_path": "~/Projects/coexio/.agents/skill-*.md",
+    "target_dir": "coexio-agents"
+  }
+]
