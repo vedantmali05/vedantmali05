@@ -1,6 +1,6 @@
 # 👋 Hi, I'm Vedant Mali!
 
-Software Developer building full-stack web/mobile platforms, IoT solutions, and software systems. 
+Software Developer building full-stack web/mobile platforms, and software systems.
 
 ---
 
@@ -35,21 +35,14 @@ Software Developer building full-stack web/mobile platforms, IoT solutions, and 
 
 ---
 
-### ⚙️ Dotfiles & Config Sync Utility
+### ⚙️ Central Config Hub & Dotfiles Sync Utility
 
-This repository includes a lightweight CLI tool to back up, sync, and restore configuration files across machines.
+This repository serves as a **central hub for essential developer configurations, AI agent scaffolding, and dotfiles backup**.
 
-Examples of tracked files include shell configs (`~/.bashrc`), agent skills, and developer tool presets, which is beneficial for maintaining a consistent dev setup across machines and backing up key configurations.
+- **AI Agent System Scaffold**: Copy `AGENTS.md` and `.agents/` to any project for a self-initializing AI setup with 6 specialized engineering roles and workflow signals.
+- **Dotfiles & Config Sync**: Backup and restore shell configs (`~/.bashrc`), agent skills, and tool presets across machines via `sync.sh` / `restore.sh`.
 
-#### What It Is
-A JSON-driven tool (`sync.sh` / `restore.sh`) that reads file paths from `tracked-files.json`, backs them up into structured folders in this repo, and pushes changes to GitHub.
-
-#### How To Use
-1. **Configure files**: Add file targets to `tracked-files.json`.
-2. **Sync to GitHub**: Run `./sync.sh .` (or `./sync.sh <label>`).
-3. **Restore to local machine**: Run `./restore.sh .` (or `./restore.sh <label>`).
-
-For complete documentation, see **[USAGE.md](USAGE.md)**.
+See **[USAGE.md](USAGE.md)** for complete scaffolding guides, workflow signals, and sync commands.
 
 ---
 
