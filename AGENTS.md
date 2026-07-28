@@ -32,7 +32,7 @@ Shorthand triggers used during chat sessions to direct agent behavior:
 
 ### Signal Details
 
-- **/discuss**: Strictly for alignment, design questions, or architectural brainstorming. The agent operates in low-token caveman mode and makes zero file modifications.
+- **/discuss**: Strictly for alignment, design questions, or architectural brainstorming. The agent operates in low-token caveman mode and makes zero file modifications. Read ./agents/skill-caveman.md anc comeback here
 - **/plan**: Analyzes requirements and drafts action items into `todos-mini.md` or a specific role's `todos.md`. Code changes are strictly forbidden during `/plan`.
 - **/remember <instruction>**: Appends new developer guidelines or constraints into the `## Remember` block of the relevant `identity.md` file with a dated timestamp.
 - **/review <file>**: Runs a pre-ship code review on the specified file using the checklists defined in the relevant role directory. Returns pass/fail items without modifying code.

@@ -7,7 +7,11 @@
 
 ## Active Tasks
 
-<!-- Add new project tasks here. Tag with → role-<name> for routing -->
+- [ ] **Design System Subfolder Integration (History Preserved)** → role-component-architect
+  - [ ] Run `git subtree add --prefix=design-system /home/vedant/Projects/design-system main` to import full history & files into `design-system/`.
+  - [ ] Verify commit log history inside `design-system/` subfolder (`git log --oneline -- design-system/`).
+  - [ ] Push merged history to GitHub `main` branch to update GitHub heatmap (`git push origin main`).
+  - [ ] Leave standalone repo untouched for manual verification.
 
 - [x] **Phase 1: Agent Self-Initialization Engine (Autofill Q2)**
   - [x] Add project auto-detection & initialization protocol in `.agents/identity.md` and `AGENTS.md`.
