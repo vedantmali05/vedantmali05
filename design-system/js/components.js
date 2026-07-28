@@ -1861,12 +1861,14 @@ function attachCustomDropdown(target, options = {}) {
     }
   };
 
-  triggerEl.addEventListener('click', togglePopover);
-
-  if (selectEl && selectEl !== triggerEl) {
-    selectEl.addEventListener('mousedown', togglePopover);
-    selectEl.addEventListener('click', togglePopover);
+  if (selectEl) {
+    selectEl.addEventListener('mousedown', (e) => {
+      // Prevent browser default native SELECT overlay
+      e.preventDefault();
+    });
   }
+
+  triggerEl.addEventListener('click', togglePopover);
 
   const onDocClick = (e) => {
     if (Date.now() - lastToggleTime < 100) return;
@@ -1916,7 +1918,7 @@ function autoAttachSelects(root = document) {
   if (!root || typeof root.querySelectorAll !== 'function') return;
   const selects = root.querySelectorAll('select');
   selects.forEach(selectEl => {
-    if (selectEl.dataset && selectEl.dataset.customDropdown === 'false') return;
+    if (selectEl.dataset && (selectEl.dataset.customDropdown === 'false' || selectEl.dataset.native === 'true')) return;
     attachCustomDropdown(selectEl);
   });
 }
