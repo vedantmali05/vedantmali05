@@ -1,98 +1,45 @@
-// Rudra Components Sync Logic
+// Core Component Display Sync Engine
 document.addEventListener("DOMContentLoaded", () => {
-  const gatewaySelect = document.getElementById("gatewaySelect") || document.getElementById("gateway-select");
-  const slaveInput = document.getElementById("slaveInput") || document.getElementById("slave-input") || document.getElementById("slaveSelect");
+  function bindSelectDisplaySync(selectId, displayId, defaultText = "None selected") {
+    const selectEl = document.getElementById(selectId);
+    const displayEl = document.getElementById(displayId);
+    if (!selectEl || !displayEl) return;
 
-  const gatewayDisplayVal = document.getElementById("gatewayDisplayVal") || document.getElementById("gateway-display-val");
-  const slaveDisplayVal = document.getElementById("slaveDisplayVal") || document.getElementById("slave-display-val");
-
-  function syncGatewayDisplay() {
-    if (!gatewaySelect || !gatewayDisplayVal) return;
-    const selectedOpt = gatewaySelect.options[gatewaySelect.selectedIndex];
-    gatewayDisplayVal.textContent = selectedOpt ? selectedOpt.textContent : "No gateway selected";
-  }
-
-  function syncSlaveDisplay() {
-    if (!slaveInput || !slaveDisplayVal) return;
-    const selectedOpt = slaveInput.options[slaveInput.selectedIndex];
-    slaveDisplayVal.textContent = selectedOpt ? selectedOpt.textContent : "No slave selected";
-  }
-
-  if (gatewaySelect) {
-    gatewaySelect.addEventListener("change", syncGatewayDisplay);
-
-    // Sync initially and on dynamic populate
-    const observer = new MutationObserver(syncGatewayDisplay);
-    observer.observe(gatewaySelect, { childList: true, characterData: true, subtree: true });
-
-    // Also trigger whenever the select value changes programmatically
-    const origValueDescriptor = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value');
-    if (origValueDescriptor) {
-      Object.defineProperty(gatewaySelect, 'value', {
-        get: origValueDescriptor.get,
-        set: function (val) {
-          origValueDescriptor.set.call(this, val);
-          syncGatewayDisplay();
-        }
-      });
+    function sync() {
+      const selectedOpt = selectEl.options[selectEl.selectedIndex];
+      displayEl.textContent = selectedOpt && selectedOpt.value ? selectedOpt.textContent : defaultText;
     }
-    syncGatewayDisplay();
-  }
 
-  if (slaveInput) {
-    slaveInput.addEventListener("change", syncSlaveDisplay);
-
-    const observer = new MutationObserver(syncSlaveDisplay);
-    observer.observe(slaveInput, { childList: true, characterData: true, subtree: true });
+    selectEl.addEventListener("change", sync);
+    const observer = new MutationObserver(sync);
+    observer.observe(selectEl, { childList: true, characterData: true, subtree: true });
 
     const origValueDescriptor = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value');
     if (origValueDescriptor) {
-      Object.defineProperty(slaveInput, 'value', {
+      Object.defineProperty(selectEl, 'value', {
         get: origValueDescriptor.get,
         set: function (val) {
           origValueDescriptor.set.call(this, val);
-          syncSlaveDisplay();
+          sync();
         }
       });
     }
-    syncSlaveDisplay();
+    sync();
   }
 
-  const testSelect = document.getElementById("testSelect") || document.getElementById("test-select");
-  const testDisplayVal = document.getElementById("testDisplayVal") || document.getElementById("test-display-val");
-
-  function syncTestDisplay() {
-    if (!testSelect || !testDisplayVal) return;
-    const selectedOpt = testSelect.options[testSelect.selectedIndex];
-    testDisplayVal.textContent = selectedOpt && selectedOpt.value ? selectedOpt.textContent : "No test selected";
-  }
-
-  if (testSelect) {
-    testSelect.addEventListener("change", syncTestDisplay);
-
-    const observer = new MutationObserver(syncTestDisplay);
-    observer.observe(testSelect, { childList: true, characterData: true, subtree: true });
-
-    const origValueDescriptor = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value');
-    if (origValueDescriptor) {
-      Object.defineProperty(testSelect, 'value', {
-        get: origValueDescriptor.get,
-        set: function (val) {
-          origValueDescriptor.set.call(this, val);
-          syncTestDisplay();
-        }
-      });
-    }
-    syncTestDisplay();
-  }
+  // Generic auto-binds for standard select pairs
+  bindSelectDisplaySync("gatewaySelect", "gatewayDisplayVal", "No item selected");
+  bindSelectDisplaySync("itemSelect", "itemDisplayVal", "No item selected");
+  bindSelectDisplaySync("optionSelect", "optionDisplayVal", "No option selected");
 });
 
-function setSlaveSelectorVisibility(visible) {
-  const divider = document.getElementById("slaveRowDivider");
-  const wrapper = document.getElementById("slaveRowWrapper");
-  if (divider) divider.style.display = visible ? "block" : "none";
+function setSubRowVisibility(rowWrapperId, dividerId, visible) {
+  const wrapper = document.getElementById(rowWrapperId);
+  const divider = document.getElementById(dividerId);
   if (wrapper) wrapper.style.display = visible ? "flex" : "none";
+  if (divider) divider.style.display = visible ? "block" : "none";
 }
+
 
 /**
  * Shows an empty-state card in a popover container.
@@ -319,7 +266,7 @@ function reportMetadataHeader(container, title, footerHtml) {
   if (!el) return;
 
   const keys = window.STORAGE_KEYS || {};
-  const compName = localStorage.getItem(keys.COMPANY_NAME) || 'Coexio';
+  const compName = localStorage.getItem(keys.COMPANY_NAME) || 'App';
   const compAddress = localStorage.getItem(keys.COMPANY_ADDRESS) || '';
   const compLogo = localStorage.getItem(keys.COMPANY_LOGO) || '';
 
@@ -1934,7 +1881,7 @@ function setupDropzone(inputId) {
 }
 
 /**
- * Shows a confirm dialog modal programmatically using coexio styles.
+ * Shows a confirm dialog modal programmatically using standard design system styles.
  * @param {Object} options
  */
 function showConfirmDialog({

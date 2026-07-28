@@ -407,25 +407,13 @@
 
             if (Array.isArray(val)) {
                 if (val.length === 0) return '[]';
-                const isClickableArray = (parentKey === 'plcs' || parentKey === 'slaves' || parentKey === 'Mapping' || parentKey === 'mapping' || parentKey === 'mappings' || parentKey === 'alarms' || parentKey === 'alarm' || parentKey === 'Alarms');
                 const items = val.map((item, idx) => {
                     const itemIndent = '  '.repeat(indentLevel + 1);
                     const formatted = formatVal(item, indentLevel + 1, parentKey, idx, currentSlaveIdx);
                     const comma = idx < val.length - 1 ? ',' : '';
-
-                    if (parentKey === 'plcs' || parentKey === 'slaves') {
-                        const cardType = parentKey === 'plcs' ? 'plc' : 'slave';
-                        const label = cardType === 'plc' ? `PLC ${idx + 1}` : `Slave ${idx + 1}`;
-                        return `<span class="json-clickable-block" data-json-type="${cardType}" data-json-idx="${idx}" title="Click to select ${label}">${itemIndent}${formatted}${comma}</span>`;
-                    }
-                    if ((parentKey === 'Mapping' || parentKey === 'mapping' || parentKey === 'mappings') && currentSlaveIdx !== null) {
-                        return `<span class="json-clickable-block" data-json-type="mapping" data-slave-idx="${currentSlaveIdx}" data-json-idx="${idx}" title="Click to select Mapping ${idx + 1}">${itemIndent}${formatted}${comma}</span>`;
-                    }
-                    if ((parentKey === 'alarms' || parentKey === 'alarm' || parentKey === 'Alarms') && currentSlaveIdx !== null) {
-                        return `<span class="json-clickable-block" data-json-type="alarm" data-slave-idx="${currentSlaveIdx}" data-json-idx="${idx}" title="Click to select Alarm ${idx + 1}">${itemIndent}${formatted}${comma}</span>`;
-                    }
-                    return `${itemIndent}${formatted}${comma}`;
-                }).join(isClickableArray ? '' : '\n');
+                    const itemType = (parentKey || 'item').toLowerCase().replace(/s$/, '');
+                    return `<span class="json-clickable-block" data-json-type="${escapeHtml(itemType)}" data-json-idx="${idx}" title="Click to select ${escapeHtml(itemType)} ${idx + 1}">${itemIndent}${formatted}${comma}</span>`;
+                }).join('\n');
                 return `[\n${items}\n${indent}]`;
             }
 
@@ -437,11 +425,11 @@
                     return `{ <span class="json-key">"start"</span>: <span class="json-number">${val.start}</span>, <span class="json-key">"count"</span>: <span class="json-number">${val.count}</span>, <span class="json-key">"type"</span>: <span class="json-string">"${val.type}"</span> }`;
                 }
 
-                const slaveIdxForProps = (parentKey === 'plcs' || parentKey === 'slaves') ? itemIdx : currentSlaveIdx;
+                const parentItemIdx = itemIdx !== null ? itemIdx : currentSlaveIdx;
 
                 const props = keys.map((k, idx) => {
                     const propIndent = '  '.repeat(indentLevel + 1);
-                    const formattedProp = formatVal(val[k], indentLevel + 1, k, itemIdx, slaveIdxForProps);
+                    const formattedProp = formatVal(val[k], indentLevel + 1, k, itemIdx, parentItemIdx);
                     const comma = idx < keys.length - 1 ? ',' : '';
                     return `${propIndent}<span class="json-key">"${escapeHtml(k)}"</span>: ${formattedProp}${comma}`;
                 }).join('\n');

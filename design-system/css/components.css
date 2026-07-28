@@ -1503,7 +1503,9 @@
   flex-shrink: 0;
 }
 
-/* Gateway Status Pill inside Page Header */
+/* Status Pill inside Page Header */
+.status-pill,
+.header-status-pill,
 .gateway-status-pill {
   display: inline-flex;
   align-items: center;
@@ -1521,46 +1523,64 @@
   user-select: none;
 }
 
+.status-pill.success,
+.header-status-pill.success,
 .gateway-status-pill.success {
   background-color: var(--clr-success-bg);
   border: 1px solid var(--clr-success-text);
   color: var(--clr-success-text);
 }
 
+.status-pill.success .icon-lucide,
+.header-status-pill.success .icon-lucide,
 .gateway-status-pill.success .icon-lucide {
   color: var(--clr-success-text);
 }
 
+.status-pill.warning,
+.header-status-pill.warning,
 .gateway-status-pill.warning {
   background-color: var(--clr-warning-bg);
   border: 1px solid var(--clr-warning-text);
   color: var(--clr-warning-text);
 }
 
+.status-pill.warning .icon-lucide,
+.header-status-pill.warning .icon-lucide,
 .gateway-status-pill.warning .icon-lucide {
   color: var(--clr-warning-text);
 }
 
+.status-pill.error,
+.header-status-pill.error,
 .gateway-status-pill.error {
   background-color: var(--clr-error-bg);
   border: 1px solid var(--clr-error-text);
   color: var(--clr-error-text);
 }
 
+.status-pill.error .icon-lucide,
+.header-status-pill.error .icon-lucide,
 .gateway-status-pill.error .icon-lucide {
   color: var(--clr-error-text);
 }
 
+.status-pill.info,
+.header-status-pill.info,
 .gateway-status-pill.info {
   background-color: var(--clr-info-bg);
   border: 1px solid var(--clr-info-text);
   color: var(--clr-info-text);
 }
 
+.status-pill.info .icon-lucide,
+.header-status-pill.info .icon-lucide,
 .gateway-status-pill.info .icon-lucide {
   color: var(--clr-info-text);
 }
 
+.status-pill .icon-lucide,
+.header-status-pill .icon-lucide,
 .gateway-status-pill .icon-lucide {
   display: flex;
   align-items: center;
@@ -1571,6 +1591,8 @@
   flex-shrink: 0;
 }
 
+.status-text,
+.header-status-text,
 .gateway-status-text {
   display: flex;
   flex-direction: column;
@@ -1579,12 +1601,16 @@
   flex: 1;
 }
 
+.status-title,
+.header-status-title,
 .gateway-status-title {
   font-size: 13px;
   font-weight: var(--fw-bold, 700);
   line-height: 1.2;
 }
 
+.status-desc,
+.header-status-desc,
 .gateway-status-desc {
   font-size: 11px;
   opacity: 0.85;
