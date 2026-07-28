@@ -1,0 +1,2747 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Standard Design System</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/icons.css">
+  <link rel="stylesheet" href="showcase/showcase.css">
+
+  <!-- Core Design System Global Module loaded early to prevent inline click ReferenceErrors -->
+  <script src="js/constants.js"></script>
+  <script src="js/main.js"></script>
+
+  <script>
+    // Showcase Presentation Logic - Global handlers registered early to prevent inline onclick ReferenceErrors
+    let demoButtonsLoading = false;
+    window.toggleDemoButtonsLoading = function () {
+      demoButtonsLoading = !demoButtonsLoading;
+      if (typeof window.setButtonLoading === 'function') {
+        window.setButtonLoading('#demo-load-btn-1', demoButtonsLoading);
+        window.setButtonLoading('#demo-load-btn-2', demoButtonsLoading);
+        window.setButtonLoading('#demo-load-btn-3', demoButtonsLoading);
+      } else {
+        alert('setButtonLoading function is not available.');
+      }
+    };
+
+    window.triggerFullscreenLoaderDemo = function () {
+      if (typeof window.showGlobalLoader === 'function') {
+        window.showGlobalLoader('Processing request...');
+        setTimeout(() => {
+          window.hideGlobalLoader();
+        }, 3000);
+      } else {
+        alert('showGlobalLoader function is not available.');
+      }
+    };
+
+    window.triggerActionToast = function () {
+      if (typeof window.showToast === 'function') {
+        window.showToast({
+          message: 'Restore auto-saved changes for draft document?',
+          type: 'info',
+          duration: Infinity,
+          actions: [
+            {
+              label: 'Restore',
+              primary: true,
+              onClick: (toast) => {
+                alert('Restored auto-save draft successfully!');
+              }
+            },
+            {
+              label: 'Discard',
+              primary: false,
+              onClick: (toast) => {
+                alert('Draft changes discarded.');
+              }
+            }
+          ]
+        });
+      } else {
+        alert('Toast system is not loaded.');
+      }
+    };
+  </script>
+</head>
+
+<body>
+
+  <!-- Sticky Header with Theme Toggle -->
+  <header class="sticky-header">
+    <div class="container header-container">
+      <h3 class="h3" id="brand-logo">Core UI <span class="small muted">Standard</span></h3>
+      <div style="display: flex; align-items: center; gap: var(--space-md);">
+        <!-- Navigation Dropdown -->
+        <div class="input-container header-nav-select"
+          style="align-items: center; background-color: var(--color-bg-secondary);">
+          <select id="nav-dropdown" class="select-field"
+            style="height: 100%; border: none; background-color: transparent; padding-top: 0; padding-bottom: 0; font-size: var(--fs-small);"
+            aria-label="Navigate to section">
+            <option value="" disabled selected>Jump to Section...</option>
+            <option value="section-future-proof-inputs">Future-Proof Inputs</option>
+            <option value="section-special-input-controls">Special Inputs</option>
+            <option value="section-search-components">Search Components</option>
+            <option value="section-selection-controls">Selection Controls</option>
+            <option value="section-accordions">Accordions</option>
+            <option value="section-buttons">Buttons</option>
+            <option value="section-dialogs">Dialogs</option>
+            <option value="section-status-cards">Status Cards</option>
+            <option value="section-status-badges">Status Badges</option>
+            <option value="section-stats">Stats</option>
+            <option value="section-tooltips">Tooltips</option>
+            <option value="section-toasts">Toasts</option>
+            <option value="section-loaders">Loaders & Spinners</option>
+            <option value="section-dropdowns-popovers">Dropdowns & Popovers</option>
+            <option value="section-empty-states">Empty States</option>
+            <option value="section-offline-icons">Offline Icons</option>
+            <option value="section-manrope-typescale">Manrope Typescale</option>
+            <option value="section-color-palette-tokens">Color Palette</option>
+          </select>
+        </div>
+
+        <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle dark/light theme">
+          <span id="theme-toggle-icon">🌙</span>
+          <span id="theme-toggle-text">Dark Mode</span>
+        </button>
+        <!-- Dev-only overflow finder -->
+        <button class="theme-toggle-btn" id="overflow-debug-btn" aria-label="Find overflowing elements"
+          title="Highlight elements causing horizontal overflow" style="font-size: 11px; gap: 4px;">
+          <span>🔍</span>
+          <span>Overflow</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- 4. Form Input Components (Future-Proof Inputs) -->
+    <section class="section" id="section-future-proof-inputs">
+      <h2 class="h2 section-title">Future-Proof Inputs</h2>
+
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-xl); align-items: start;">
+
+        <!-- Type 1: Default Input -->
+        <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+          <h3 class="h4" style="font-weight: var(--fw-semibold); color: var(--color-text-secondary);">1. Default State
+          </h3>
+
+          <!-- Default Form Group -->
+          <div class="form-group">
+            <label class="form-label" for="input-default">Username</label>
+            <div class="input-container">
+              <input type="text" id="input-default" class="input-field" placeholder="Enter your username">
+            </div>
+            <div class="status-card xsmall" style="margin-top: 4px;">
+              <span class="icon-lucide icon-info"></span>
+              <span>This is a standard description or helper text.</span>
+            </div>
+          </div>
+
+          <!-- Disabled Form Group -->
+          <div class="form-group disabled">
+            <label class="form-label" for="input-disabled">Disabled Field</label>
+            <div class="input-container">
+              <input type="text" id="input-disabled" class="input-field" placeholder="This input is disabled" disabled
+                value="Pre-filled disabled text">
+            </div>
+            <div class="status-card xsmall" style="margin-top: 4px;">
+              <span class="icon-lucide icon-shield"></span>
+              <span>This field cannot be edited.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Type 2: Errored Input (and validation states) -->
+        <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+          <h3 class="h4" style="font-weight: var(--fw-semibold); color: var(--color-text-secondary);">2. Validation
+            States</h3>
+
+          <!-- Errored Form Group -->
+          <div class="form-group error">
+            <label class="form-label" for="input-error">Email Address</label>
+            <div class="input-container">
+              <input type="email" id="input-error" class="input-field" placeholder="name@company"
+                value="invalid-email-format">
+            </div>
+            <div class="status-card xsmall error" style="margin-top: 4px;">
+              <span class="icon-lucide icon-x"></span>
+              <span>Invalid email address. Please enter a valid address (e.g. name@company.com).</span>
+            </div>
+          </div>
+
+          <!-- Success Form Group -->
+          <div class="form-group success">
+            <label class="form-label" for="input-success">Account ID</label>
+            <div class="input-container">
+              <input type="text" id="input-success" class="input-field" value="admin_2026">
+            </div>
+            <div class="status-card xsmall success" style="margin-top: 4px;">
+              <span class="icon-lucide icon-check"></span>
+              <span>Account ID is verified and available.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Type 3: Start and End Elements -->
+        <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+          <h3 class="h4" style="font-weight: var(--fw-semibold); color: var(--color-text-secondary);">3. Start & End
+            Elements</h3>
+
+          <!-- Input with Start/End Addons -->
+          <div class="form-group">
+            <label class="form-label" for="input-addons">Domain Endpoint</label>
+            <div class="input-container">
+              <span class="input-addon start">https://</span>
+              <input type="text" id="input-addons" class="input-field" placeholder="my-api-endpoint">
+              <span class="input-addon end">.domain.com</span>
+            </div>
+            <div class="status-card xsmall" style="margin-top: 4px;">
+              <span class="icon-lucide icon-settings"></span>
+              <span>Configures your primary external integration gateway.</span>
+            </div>
+          </div>
+
+          <!-- Errored Addon Input to test internal borders -->
+          <div class="form-group error">
+            <label class="form-label" for="input-addons-error">Custom Port</label>
+            <div class="input-container">
+              <span class="input-addon start">PORT</span>
+              <input type="text" id="input-addons-error" class="input-field" value="999999" placeholder="Enter port">
+              <span class="input-addon end">TCP</span>
+            </div>
+            <div class="status-card xsmall error" style="margin-top: 4px;">
+              <span class="icon-lucide icon-x"></span>
+              <span>Port number must be between 1 and 65535.</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. Special Input Controls (Select & Textarea) -->
+    <section class="section" id="section-special-input-controls">
+      <h2 class="h2 section-title">Special Input Controls</h2>
+
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-xl); align-items: start;">
+
+        <!-- Column 1: Select Dropdowns -->
+        <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+          <h3 class="h4" style="font-weight: var(--fw-semibold); color: var(--color-text-secondary);">Select Dropdowns
+          </h3>
+
+          <!-- Standard Custom Select -->
+          <div class="form-group">
+            <label class="form-label" for="select-device">Select Target Device</label>
+            <div class="input-container">
+              <select id="select-device" class="select-field">
+                <option value="" disabled selected>Choose a device...</option>
+                <option value="iot-node-1">IoT Node Alpha - nominal</option>
+                <option value="iot-node-2">IoT Node Beta - backup</option>
+                <option value="gateway-main">Gateway Router Main</option>
+              </select>
+            </div>
+            <div class="status-card xsmall info" style="margin-top: 4px;">
+              <span class="icon-lucide icon-bell"></span>
+              <span>Specifies which device will receive the firmware configuration.</span>
+            </div>
+          </div>
+
+          <!-- Disabled Custom Select -->
+          <div class="form-group disabled">
+            <label class="form-label" for="select-device-disabled">Access Level (Disabled)</label>
+            <div class="input-container">
+              <select id="select-device-disabled" class="select-field" disabled>
+                <option value="readonly" selected>Read-only Operator Mode</option>
+                <option value="admin">Administrator Override</option>
+              </select>
+            </div>
+            <div class="status-card xsmall" style="margin-top: 4px;">
+              <span class="icon-lucide icon-shield"></span>
+              <span>Access tier is locked for security policy.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 2: Text Areas -->
+        <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+          <h3 class="h4" style="font-weight: var(--fw-semibold); color: var(--color-text-secondary);">Textareas</h3>
+
+          <!-- Standard Textarea -->
+          <div class="form-group">
+            <label class="form-label" for="textarea-notes">Configuration Remarks</label>
+            <div class="input-container">
+              <textarea id="textarea-notes" class="textarea-field"
+                placeholder="Provide any comments or constraints..."></textarea>
+            </div>
+            <div class="status-card xsmall" style="margin-top: 4px;">
+              <span class="icon-lucide icon-filetext"></span>
+              <span>Remarks will be appended to the central telemetry logs.</span>
+            </div>
+          </div>
+
+          <!-- Errored Textarea -->
+          <div class="form-group error">
+            <label class="form-label" for="textarea-payload">Payload Schema Definition</label>
+            <div class="input-container">
+              <textarea id="textarea-payload" class="textarea-field"
+                placeholder="Paste config here...">{ "device_id": "iot-node-1", "actions": [ "poll" ] </textarea>
+            </div>
+            <div class="status-card xsmall error" style="margin-top: 4px;">
+              <span class="icon-lucide icon-x"></span>
+              <span>Invalid payload format. Missing closing bracket in JSON.</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Searchbar Section -->
+    <section class="section" id="section-search-components">
+      <h2 class="h2 section-title">Search Components</h2>
+
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-xl); align-items: start;">
+        <!-- Column 1: Standard Searchbar -->
+        <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+          <div class="form-group">
+            <label class="form-label" for="search-input-standard">Standard Search</label>
+            <div class="input-container">
+              <span class="input-addon start">
+                <span class="icon-lucide icon-search"></span>
+              </span>
+              <input type="text" id="search-input-standard" class="input-field"
+                placeholder="Search telemetry logs, nodes, or configs...">
+              <button class="input-addon end" aria-label="Submit search">
+                <span class="icon-lucide icon-cornerdownleft"></span>
+              </button>
+            </div>
+            <div class="status-card xsmall" style="margin-top: 4px;">
+              <span class="icon-lucide icon-info"></span>
+              <span>Press enter or click the return button to submit query.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 2: Alternative Search (Emphasized or Styled) -->
+        <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+          <div class="form-group">
+            <label class="form-label" for="search-input-compact">Compact Search</label>
+            <div class="input-container">
+              <span class="input-addon start">
+                <span class="icon-lucide icon-search"></span>
+              </span>
+              <input type="text" id="search-input-compact" class="input-field" placeholder="Filter active view...">
+              <button class="input-addon end" aria-label="Submit filter"
+                style="padding: 0 var(--space-xs); display: flex; align-items: center; justify-content: center;">
+                <kbd>Enter</kbd>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Selection Controls (Checkboxes, Radios & Choice Cards) -->
+    <section class="section" id="section-selection-controls">
+      <h2 class="h2 section-title">Selection Controls</h2>
+
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-xl); align-items: start;">
+
+        <!-- Column 1: Standard Checkboxes & Radios -->
+        <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+          <h3 class="h4" style="font-weight: var(--fw-semibold); color: var(--color-text-secondary);">Checkboxes & Radio
+            Options</h3>
+
+          <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
+            <!-- Checkboxes -->
+            <label class="form-check">
+              <input type="checkbox" class="form-check-input" checked>
+              <span class="form-check-label">Enable real-time telemetry streaming</span>
+            </label>
+
+            <label class="form-check">
+              <input type="checkbox" class="form-check-input">
+              <span class="form-check-label">Send email alerts on node failure</span>
+            </label>
+
+            <label class="form-check disabled">
+              <input type="checkbox" class="form-check-input" disabled checked>
+              <span class="form-check-label">System core logs (Required)</span>
+            </label>
+
+            <hr style="border: 0; border-top: 1px dashed var(--color-input-border); margin: var(--space-xs) 0;">
+
+            <!-- Radios -->
+            <label class="form-check">
+              <input type="radio" name="node-policy" class="form-check-input" checked>
+              <span class="form-check-label">Automatic failover policy</span>
+            </label>
+
+            <label class="form-check">
+              <input type="radio" name="node-policy" class="form-check-input">
+              <span class="form-check-label">Manual intervention warning</span>
+            </label>
+
+            <label class="form-check disabled">
+              <input type="radio" name="node-policy" class="form-check-input" disabled>
+              <span class="form-check-label">Strict fallback policy (Offline)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Column 2: Choice Cards -->
+        <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+          <h3 class="h4" style="font-weight: var(--fw-semibold); color: var(--color-text-secondary);">Choice Cards</h3>
+
+          <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
+
+            <!-- Radio Cards -->
+            <label class="choice-card">
+              <input type="radio" name="storage-card" class="form-check-input choice-card-input" checked>
+              <div class="choice-card-content">
+                <span class="choice-card-title">Standard Telemetry Storage</span>
+                <span class="choice-card-desc">Retention period of 30 days. Fast search access.</span>
+              </div>
+            </label>
+
+            <label class="choice-card">
+              <input type="radio" name="storage-card" class="form-check-input choice-card-input">
+              <div class="choice-card-content">
+                <span class="choice-card-title">Archive & Cold Storage</span>
+                <span class="choice-card-desc">Retention period of 1 year. Search query latency up to 5 mins.</span>
+              </div>
+            </label>
+
+            <hr style="border: 0; border-top: 1px dashed var(--color-input-border); margin: var(--space-xs) 0;">
+
+            <!-- Checkbox Cards -->
+            <label class="choice-card">
+              <input type="checkbox" class="form-check-input choice-card-input" checked>
+              <div class="choice-card-content">
+                <span class="choice-card-title">Include Kernel Logs</span>
+                <span class="choice-card-desc">Appends raw hypervisor kernel output to failure telemetry reports.</span>
+              </div>
+            </label>
+
+            <label class="choice-card">
+              <input type="checkbox" class="form-check-input choice-card-input" disabled>
+              <div class="choice-card-content">
+                <span class="choice-card-title">Network Packet Inspection (Disabled)</span>
+                <span class="choice-card-desc">Requires admin clearance to toggle packet sniffing.</span>
+              </div>
+            </label>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Accordions Section -->
+    <section class="section" id="section-accordions">
+      <h2 class="h2 section-title">Accordions</h2>
+
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-xl); align-items: start;">
+
+        <!-- Column 1: Standalone Outlined & Subtle -->
+        <div style="display: flex; flex-direction: column; gap: var(--space-xl);">
+
+          <!-- Outlined Accordions -->
+          <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
+            <h3 class="h4"
+              style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-bottom: var(--space-xs);">
+              Standalone Outlined</h3>
+
+            <details class="accordion-item outlined" open>
+              <summary class="accordion-trigger">
+                <div class="accordion-trigger-left">
+                  <span class="accordion-trigger-icon">
+                    <span class="icon-lucide icon-settings"></span>
+                  </span>
+                  <span>System Configuration</span>
+                </div>
+                <span class="icon-lucide icon-chevrondown accordion-chevron"></span>
+              </summary>
+              <div class="accordion-content">
+                Configure kernel runtime variables, active virtualization layers, and memory partition thresholds.
+                Outlined accordions feature clear outlines that focus reactively.
+              </div>
+            </details>
+
+            <details class="accordion-item outlined">
+              <summary class="accordion-trigger">
+                <div class="accordion-trigger-left">
+                  <span class="accordion-trigger-icon">
+                    <span class="icon-lucide icon-shield"></span>
+                  </span>
+                  <span>Security & Permissions</span>
+                </div>
+                <span class="icon-lucide icon-chevrondown accordion-chevron"></span>
+              </summary>
+              <div class="accordion-content">
+                Manage access control lists (ACLs), TLS certificates, and OAuth provider integrations for secure
+                communication.
+              </div>
+            </details>
+          </div>
+
+          <!-- Subtle Accordions -->
+          <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
+            <h3 class="h4"
+              style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-bottom: var(--space-xs);">
+              Standalone Subtle</h3>
+
+            <details class="accordion-item subtle" open>
+              <summary class="accordion-trigger">
+                <div class="accordion-trigger-left">
+                  <span class="accordion-trigger-icon">
+                    <span class="icon-lucide icon-database"></span>
+                  </span>
+                  <span>Database Snapshots</span>
+                </div>
+                <span class="icon-lucide icon-chevrondown accordion-chevron"></span>
+              </summary>
+              <div class="accordion-content">
+                Review automated backup tasks, replication health, and storage volume optimization records. Subtle
+                accordions use background tints instead of thick borders.
+              </div>
+            </details>
+
+            <details class="accordion-item subtle">
+              <summary class="accordion-trigger">
+                <div class="accordion-trigger-left">
+                  <span class="accordion-trigger-icon">
+                    <span class="icon-lucide icon-info"></span>
+                  </span>
+                  <span>General Disclosures</span>
+                </div>
+                <span class="icon-lucide icon-chevrondown accordion-chevron"></span>
+              </summary>
+              <div class="accordion-content">
+                Access general legal licensing details, open-source software attributions, and privacy policies.
+              </div>
+            </details>
+          </div>
+
+        </div>
+
+        <!-- Column 2: Accordion Group & Interactive Demos -->
+        <div style="display: flex; flex-direction: column; gap: var(--space-xl);">
+
+          <!-- Accordion Group -->
+          <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
+            <h3 class="h4"
+              style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-bottom: var(--space-xs);">
+              Unified Accordion Group</h3>
+
+            <div class="accordion-group">
+              <details class="accordion-item outlined" open>
+                <summary class="accordion-trigger">
+                  <div class="accordion-trigger-left">
+                    <span class="accordion-trigger-icon">
+                      <span class="icon-lucide icon-user"></span>
+                    </span>
+                    <span>User Profile Settings</span>
+                  </div>
+                  <span class="icon-lucide icon-chevrondown accordion-chevron"></span>
+                </summary>
+                <div class="accordion-content">
+                  Update primary account details, display avatar assets, and set default localized timezone offsets.
+                </div>
+              </details>
+
+              <details class="accordion-item outlined">
+                <summary class="accordion-trigger">
+                  <div class="accordion-trigger-left">
+                    <span class="accordion-trigger-icon">
+                      <span class="icon-lucide icon-bell"></span>
+                    </span>
+                    <span>Notification Preferences</span>
+                  </div>
+                  <span class="icon-lucide icon-chevrondown accordion-chevron"></span>
+                </summary>
+                <div class="accordion-content">
+                  Customize telemetry warning flags, system event hooks, and direct messaging alert parameters.
+                </div>
+              </details>
+
+              <details class="accordion-item outlined">
+                <summary class="accordion-trigger">
+                  <div class="accordion-trigger-left">
+                    <span class="accordion-trigger-icon">
+                      <span class="icon-lucide icon-creditcard"></span>
+                    </span>
+                    <span>Billing & Subscriptions</span>
+                  </div>
+                  <span class="icon-lucide icon-chevrondown accordion-chevron"></span>
+                </summary>
+                <div class="accordion-content">
+                  Review invoice generation dates, active API payment methods, and current workspace quotas.
+                </div>
+              </details>
+            </div>
+          </div>
+
+          <!-- Feature-Specific Trigger variations (Text-only trigger, Status-tag triggers) -->
+          <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
+            <h3 class="h4"
+              style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-bottom: var(--space-xs);">
+              Variant Triggers</h3>
+
+            <details class="accordion-item outlined">
+              <summary class="accordion-trigger">
+                <span>Text-only Simple Trigger (No Icon/Addon)</span>
+                <span class="icon-lucide icon-chevrondown accordion-chevron"></span>
+              </summary>
+              <div class="accordion-content">
+                Minimal trigger structure containing only label text and the chevron indicator.
+              </div>
+            </details>
+
+            <details class="accordion-item outlined">
+              <summary class="accordion-trigger">
+                <div class="accordion-trigger-left">
+                  <span class="accordion-trigger-icon">
+                    <span class="icon-lucide icon-terminal"></span>
+                  </span>
+                  <span>Interactive Logs</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: var(--space-sm);">
+                  <span class="status-badge xsmall success">Live</span>
+                  <span class="icon-lucide icon-chevrondown accordion-chevron"></span>
+                </div>
+              </summary>
+              <div class="accordion-content">
+                Realtime debug stream from stdout. Telemetry parsing completed with zero critical failures.
+              </div>
+            </details>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Buttons Component -->
+    <section class="section" id="section-buttons">
+      <h2 class="h2 section-title">Buttons</h2>
+      <p
+        style="color: var(--color-text-secondary); font-size: var(--fs-small); max-width: 640px; margin: 0 0 var(--space-lg) 0;">
+        A comprehensive collection of button variants, configurations, and composable add-ons including badges,
+        shortcuts, and start/end icons.</p>
+
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-xl); align-items: start;">
+
+        <!-- Column 1: Core Variants -->
+        <div
+          style="display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-md); background-color: var(--color-bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--color-border);">
+          <h3 class="h4"
+            style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-bottom: var(--space-xs);">
+            Core Variants</h3>
+          <div style="display: flex; flex-flow: row wrap; gap: var(--space-sm); align-items: center;">
+            <button class="btn primary">Primary</button>
+            <button class="btn secondary">Secondary</button>
+            <button class="btn outlined">Outlined</button>
+            <button class="btn ghost">Ghost</button>
+            <button class="btn text">Text</button>
+            <button class="btn danger">Danger</button>
+          </div>
+          <div
+            style="margin-top: var(--space-sm); border-top: 1px solid var(--color-border); padding-top: var(--space-md);">
+            <h4 class="small muted" style="font-weight: var(--fw-semibold); margin-bottom: var(--space-xs);">Disabled
+              State</h4>
+            <div style="display: flex; flex-flow: row wrap; gap: var(--space-sm); align-items: center;">
+              <button class="btn primary" disabled>Primary</button>
+              <button class="btn secondary" disabled>Secondary</button>
+              <button class="btn outlined" disabled>Outlined</button>
+              <button class="btn ghost" disabled>Ghost</button>
+              <button class="btn text" disabled>Text</button>
+              <button class="btn danger" disabled>Danger</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 2: Start & End Elements -->
+        <div
+          style="display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-md); background-color: var(--color-bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--color-border);">
+          <h3 class="h4"
+            style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-bottom: var(--space-xs);">
+            Compositions & Badges</h3>
+          <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
+            <div style="display: flex; flex-wrap: wrap; gap: var(--space-sm); align-items: center;">
+              <button class="btn primary">
+                <span class="btn-start-icon"><span class="icon-lucide icon-plus"></span></span>
+                <span>Add Item</span>
+              </button>
+              <button class="btn secondary">
+                <span>Download Report</span>
+                <span class="btn-end-icon"><span class="icon-lucide icon-download"></span></span>
+              </button>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: var(--space-sm); align-items: center;">
+              <button class="btn outlined">
+                <span>Notifications</span>
+                <span class="badge outlined">12</span>
+              </button>
+              <button class="btn secondary">
+                <span>Quick Search</span>
+                <kbd>⌘K</kbd>
+              </button>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: var(--space-sm); align-items: center;">
+              <button class="btn primary">
+                <span class="btn-start-icon"><span class="icon-lucide icon-settings"></span></span>
+                <span>Configure</span>
+                <span class="badge emphasized info">New</span>
+                <kbd>⌘,</kbd>
+              </button>
+              <button class="btn danger outlined">
+                <span class="btn-start-icon"><span class="icon-lucide icon-trash2"></span></span>
+                <span>Purge Cache</span>
+                <kbd>⇧⌘D</kbd>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 3: Icon & Fill Container Buttons -->
+        <div
+          style="display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-md); background-color: var(--color-bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--color-border);">
+          <h3 class="h4"
+            style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-bottom: var(--space-xs);">
+            Icon & Full Sizing</h3>
+
+          <div style="display: flex; flex-direction: column; gap: var(--space-xs);">
+            <span class="xsmall muted" style="font-weight: var(--fw-semibold);">Icon Button Sizes</span>
+            <div style="display: flex; flex-wrap: wrap; gap: var(--space-md); align-items: center;">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                <button class="btn icon primary sz-small" aria-label="Add item">
+                  <span class="icon-lucide icon-plus"></span>
+                </button>
+                <span class="xsmall muted">Small (28px)</span>
+              </div>
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                <button class="btn icon secondary" aria-label="Settings">
+                  <span class="icon-lucide icon-settings"></span>
+                </button>
+                <span class="xsmall muted">Medium (36px)</span>
+              </div>
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                <button class="btn icon danger sz-large" aria-label="Delete">
+                  <span class="icon-lucide icon-trash2"></span>
+                </button>
+                <span class="xsmall muted">Large (44px)</span>
+              </div>
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                <button class="btn icon outlined" aria-label="Copy">
+                  <span class="icon-lucide icon-copy"></span>
+                </button>
+                <span class="xsmall muted">Outlined</span>
+              </div>
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                <button class="btn icon ghost" aria-label="Close">
+                  <span class="icon-lucide icon-x"></span>
+                </button>
+                <span class="xsmall muted">Ghost</span>
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="margin-top: var(--space-sm); border-top: 1px solid var(--color-border); padding-top: var(--space-md);">
+            <span class="xsmall muted"
+              style="font-weight: var(--fw-semibold); display: block; margin-bottom: var(--space-xs);">Fill Container
+              Modifier</span>
+            <div
+              style="border: 2px dashed var(--color-border); padding: var(--space-sm); border-radius: var(--radius-md); height: 72px; display: flex; align-items: center; justify-content: center; background-color: var(--color-bg-primary);">
+              <button class="btn primary fill-container">
+                <span class="btn-start-icon"><span class="icon-lucide icon-plus"></span></span>
+                <span>Expanded Full-Height/Width Button</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 4: Menu Items -->
+        <div
+          style="display: flex; flex-direction: column; gap: var(--space-md); grid-column: 1 / -1; padding: var(--space-md); background-color: var(--color-bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--color-border);">
+          <h3 class="h4"
+            style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-bottom: var(--space-xs);">
+            Menu Items (.btn.menu)</h3>
+          <p style="color: var(--color-text-secondary); font-size: var(--fs-small); margin: 0 0 var(--space-xs) 0;">
+            Left-aligned start icons and labels with end elements (shortcuts, badges) pushed automatically to the right.
+          </p>
+          <div
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-md); width: 100%;">
+            <button class="btn menu">
+              <span class="btn-start-icon"><span class="icon-lucide icon-home"></span></span>
+              <span>Go to Home Dashboard</span>
+              <kbd>⌘H</kbd>
+            </button>
+            <button class="btn menu">
+              <span class="btn-start-icon"><span class="icon-lucide icon-bell"></span></span>
+              <span>Notifications Panel</span>
+              <span class="badge emphasized info">99+</span>
+            </button>
+            <button class="btn menu">
+              <span class="btn-start-icon"><span class="icon-lucide icon-settings"></span></span>
+              <span>System Settings</span>
+              <kbd>⌘,</kbd>
+            </button>
+            <button class="btn menu danger">
+              <span class="btn-start-icon"><span class="icon-lucide icon-trash2"></span></span>
+              <span>Delete System Cache</span>
+              <span class="badge solid error">25 MB</span>
+              <kbd>⇧⌘⌫</kbd>
+            </button>
+          </div>
+        </div>
+
+        <!-- Danger Variants & Tag Comparison -->
+        <div
+          style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-xl); margin-top: var(--space-lg); border-top: 1px solid var(--color-border); padding-top: var(--space-lg);">
+          <!-- Danger Variants -->
+          <div
+            style="display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-md); background-color: var(--color-bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--color-border);">
+            <h3 class="h4"
+              style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-bottom: var(--space-xs);">
+              Danger Button Variants</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: var(--space-sm); align-items: center;">
+              <button class="btn danger">Solid Danger</button>
+              <button class="btn danger outlined">Outlined Danger</button>
+              <button class="btn danger ghost">Ghost Danger</button>
+              <button class="btn danger text">Text Danger</button>
+            </div>
+            <div
+              style="margin-top: var(--space-sm); border-top: 1px solid var(--color-border); padding-top: var(--space-md);">
+              <span class="xsmall muted"
+                style="font-weight: var(--fw-semibold); display: block; margin-bottom: var(--space-xs);">Disabled Danger
+                Variants</span>
+              <div style="display: flex; flex-wrap: wrap; gap: var(--space-sm); align-items: center;">
+                <button class="btn danger" disabled>Solid Danger</button>
+                <button class="btn danger outlined" disabled>Outlined Danger</button>
+                <button class="btn danger ghost" disabled>Ghost Danger</button>
+                <button class="btn danger text" disabled>Text Danger</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tag Comparison -->
+          <div
+            style="display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-md); background-color: var(--color-bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--color-border);">
+            <h3 class="h4"
+              style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-bottom: var(--space-xs);">
+              Tag Comparison (&lt;button&gt; vs &lt;a&gt;)</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
+              <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
+                <span class="xsmall muted" style="font-weight: var(--fw-semibold); text-align: center;">&lt;button&gt;
+                  Tag</span>
+                <button class="btn primary">Primary</button>
+                <button class="btn secondary">Secondary</button>
+                <button class="btn outlined">Outlined</button>
+                <button class="btn danger">Danger</button>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
+                <span class="xsmall muted" style="font-weight: var(--fw-semibold); text-align: center;">&lt;a&gt; Tag
+                  (styled as .btn)</span>
+                <a href="#" class="btn primary" onclick="event.preventDefault()">Primary</a>
+                <a href="#" class="btn secondary" onclick="event.preventDefault()">Secondary</a>
+                <a href="#" class="btn outlined" onclick="event.preventDefault()">Outlined</a>
+                <a href="#" class="btn danger" onclick="event.preventDefault()">Danger</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Dialog Component -->
+    <section class="section" id="section-dialogs">
+      <h2 class="h2 section-title">Dialogs</h2>
+      <p
+        style="color: var(--color-text-secondary); font-size: var(--fs-small); max-width: 640px; margin: 0 0 var(--space-lg) 0;">
+        General-purpose dialog with modal and non-modal modes. Scrim scrolls on overflow, header and footer stay sticky.
+        Theme-aware with mobile bottom-sheet layout.</p>
+
+      <!-- Trigger grid -->
+      <div style="display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-bottom: var(--space-xl);">
+        <button class="btn primary" onclick="openDialog('scrim-confirm')">Confirmation (sm)</button>
+        <button class="btn secondary" onclick="openDialog('scrim-alert')">Alert (sm, non-modal)</button>
+        <button class="btn secondary" onclick="openDialog('scrim-form')">Form (md)</button>
+        <button class="btn secondary" onclick="openDialog('scrim-stepper')">Stepper (lg)</button>
+        <button class="btn secondary" onclick="openDialog('scrim-terms')">Long Content (lg)</button>
+        <button class="btn secondary" onclick="openDialog('scrim-media')">Media (custom, non-modal)</button>
+        <button class="btn danger outlined" onclick="openDialog('scrim-danger')">Danger Action (sm)</button>
+      </div>
+
+      <!-- 1. Confirmation (sm, modal) -->
+      <div class="dialog-scrim" id="scrim-confirm" data-modal="true" role="dialog" aria-modal="true"
+        aria-labelledby="title-confirm">
+        <div class="dialog-box" data-size="sm">
+          <div class="dialog-header">
+            <div class="dialog-title-group">
+              <h3 class="dialog-title" id="title-confirm">Delete item?</h3>
+            </div>
+            <button class="btn icon ghost" onclick="closeDialog('scrim-confirm')" aria-label="Close">
+              <span class="icon-lucide icon-x"></span>
+            </button>
+          </div>
+          <div class="dialog-content">
+            <div class="status-card xsmall error" style="margin-bottom: var(--space-md);">
+              <span class="icon-lucide icon-alerttriangle"></span>
+              This action is permanent and cannot be undone.
+            </div>
+            <p style="margin: 0; color: var(--color-text-secondary); font-size: var(--fs-small);">The item and all its
+              associated data will be permanently removed from your workspace.</p>
+          </div>
+          <div class="dialog-footer">
+            <div class="dialog-footer-left"></div>
+            <div class="dialog-footer-right">
+              <button class="btn secondary" onclick="closeDialog('scrim-confirm')">Cancel</button>
+              <button class="btn danger" onclick="closeDialog('scrim-confirm')">Delete Item</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Alert (sm, non-modal) -->
+      <div class="dialog-scrim" id="scrim-alert" data-modal="false" role="dialog" aria-modal="false"
+        aria-labelledby="title-alert">
+        <div class="dialog-box" data-size="sm">
+          <div class="dialog-header">
+            <div class="dialog-title-group">
+              <h3 class="dialog-title" id="title-alert">Session expiring</h3>
+            </div>
+            <button class="btn icon ghost" onclick="closeDialog('scrim-alert')" aria-label="Close">
+              <span class="icon-lucide icon-x"></span>
+            </button>
+          </div>
+          <div class="dialog-content">
+            <div class="status-card xsmall warning" style="margin-bottom: var(--space-md);">
+              <span class="icon-lucide icon-clock"></span>
+              Your session will expire in 5 minutes.
+            </div>
+            <p style="margin: 0; color: var(--color-text-secondary); font-size: var(--fs-small);">Save your work to
+              avoid losing any unsaved changes. You can extend the session from account settings.</p>
+          </div>
+          <div class="dialog-footer">
+            <div class="dialog-footer-left"></div>
+            <div class="dialog-footer-right">
+              <button class="btn primary" onclick="closeDialog('scrim-alert')">OK, got it</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Form (md, modal) -->
+      <div class="dialog-scrim" id="scrim-form" data-modal="true" role="dialog" aria-modal="true"
+        aria-labelledby="title-form">
+        <div class="dialog-box" data-size="md">
+          <div class="dialog-header">
+            <div class="dialog-title-group">
+              <h3 class="dialog-title" id="title-form">Edit Profile</h3>
+              <p class="dialog-subtitle">Update your personal details below</p>
+            </div>
+            <button class="btn icon ghost" onclick="closeDialog('scrim-form')" aria-label="Close">
+              <span class="icon-lucide icon-x"></span>
+            </button>
+          </div>
+          <div class="dialog-content">
+            <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+              <div class="input-group">
+                <label class="input-label">Display Name</label>
+                <div class="input-container"><input type="text" class="input-field" placeholder="John Doe"></div>
+              </div>
+              <div class="input-group">
+                <label class="input-label">Email</label>
+                <div class="input-container"><input type="email" class="input-field" placeholder="john@example.com">
+                </div>
+              </div>
+              <div class="input-group">
+                <label class="input-label">Role</label>
+                <div class="input-container">
+                  <select class="select-field">
+                    <option>Viewer</option>
+                    <option selected>Editor</option>
+                    <option>Admin</option>
+                  </select>
+                </div>
+              </div>
+              <div class="input-group">
+                <label class="input-label">Bio</label>
+                <div class="input-container"><textarea class="input-field" rows="3"
+                    placeholder="Tell us about yourself"></textarea></div>
+              </div>
+            </div>
+          </div>
+          <div class="dialog-footer">
+            <div class="dialog-footer-left"></div>
+            <div class="dialog-footer-right">
+              <button class="btn secondary" onclick="closeDialog('scrim-form')">Cancel</button>
+              <button class="btn primary" onclick="closeDialog('scrim-form')">Save Changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Stepper (lg, modal) -->
+      <div class="dialog-scrim" id="scrim-stepper" data-modal="true" role="dialog" aria-modal="true"
+        aria-labelledby="title-stepper">
+        <div class="dialog-box" data-size="lg">
+          <div class="dialog-header">
+            <div class="dialog-title-group">
+              <h3 class="dialog-title" id="title-stepper">Setup Wizard</h3>
+              <p class="dialog-subtitle">Step 2 of 4 — Configure notifications</p>
+            </div>
+            <button class="btn icon ghost" onclick="closeDialog('scrim-stepper')" aria-label="Close">
+              <span class="icon-lucide icon-x"></span>
+            </button>
+          </div>
+          <div class="dialog-content">
+            <p style="color: var(--color-text-secondary); font-size: var(--fs-small); margin: 0 0 var(--space-md) 0;">
+              Choose which events trigger notifications for your team.</p>
+            <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
+              <label class="choice-card">
+                <input type="checkbox" class="form-check-input choice-card-input" checked>
+                <div class="choice-card-content">
+                  <span class="choice-card-title">Deployment started</span>
+                  <span class="choice-card-desc">Fires when a new deployment pipeline begins execution.</span>
+                </div>
+              </label>
+              <label class="choice-card">
+                <input type="checkbox" class="form-check-input choice-card-input" checked>
+                <div class="choice-card-content">
+                  <span class="choice-card-title">Deployment succeeded</span>
+                  <span class="choice-card-desc">Fires when all deployment stages complete without error.</span>
+                </div>
+              </label>
+              <label class="choice-card">
+                <input type="checkbox" class="form-check-input choice-card-input">
+                <div class="choice-card-content">
+                  <span class="choice-card-title">Deployment failed</span>
+                  <span class="choice-card-desc">Fires on any stage failure or timeout during the pipeline.</span>
+                </div>
+              </label>
+              <label class="choice-card">
+                <input type="checkbox" class="form-check-input choice-card-input" disabled>
+                <div class="choice-card-content">
+                  <span class="choice-card-title">Alert threshold exceeded (Disabled)</span>
+                  <span class="choice-card-desc">Requires admin clearance to enable system alert forwarding.</span>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="dialog-footer">
+            <div class="dialog-footer-left">
+              <button class="btn secondary" onclick="closeDialog('scrim-stepper')">Cancel</button>
+            </div>
+            <div class="dialog-footer-right">
+              <button class="btn secondary sz-small">Back</button>
+              <button class="btn primary" onclick="closeDialog('scrim-stepper')">Next</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Long Content / Terms (lg, modal) -->
+      <div class="dialog-scrim" id="scrim-terms" data-modal="true" role="dialog" aria-modal="true"
+        aria-labelledby="title-terms">
+        <div class="dialog-box" data-size="lg">
+          <div class="dialog-header">
+            <div class="dialog-title-group">
+              <h3 class="dialog-title" id="title-terms">Terms of Service</h3>
+              <p class="dialog-subtitle">Please read carefully before proceeding</p>
+            </div>
+            <button class="btn icon ghost" onclick="closeDialog('scrim-terms')" aria-label="Close">
+              <span class="icon-lucide icon-x"></span>
+            </button>
+          </div>
+          <div class="dialog-content">
+            <p style="color: var(--color-text-secondary); font-size: var(--fs-small);">By using this service you agree
+              to the following terms. These terms govern your access to and use of the platform and all associated APIs,
+              tools, and documentation.</p>
+            <p style="color: var(--color-text-secondary); font-size: var(--fs-small);">Lorem ipsum dolor sit amet,
+              consectetur adipiscing elit. Sed euismod, nisl vel ultricies lacinia, nisl nisl aliquam nisl, nec aliquam
+              nisl nisl sit amet nisl. Donec euismod nisl vel ultricies lacinia.</p>
+            <p style="color: var(--color-text-secondary); font-size: var(--fs-small);">Pellentesque habitant morbi
+              tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae,
+              ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi
+              vitae est. Mauris placerat eleifend leo.</p>
+            <p style="color: var(--color-text-secondary); font-size: var(--fs-small);">Aenean fermentum, elit eget
+              tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis
+              pulvinar facilisis. Ut felis. Nam dui erat, auctor a, dignissim quis, sollicitudin eu, felis.</p>
+            <p style="color: var(--color-text-secondary); font-size: var(--fs-small);">Pellentesque nisi urna, interdum
+              eget, sagittis et, consectetuer eu, nunc. Sed volutpat mi id felis euismod quis aliquet nibh viverra.
+              Nulla facilisi. In dui magna, posuere eget, vestibulum et, tempor auctor, justo. In ac felis quis tortor
+              malesuada pretium.</p>
+            <p style="color: var(--color-text-secondary); font-size: var(--fs-small);">Pellentesque auctor neque. Nulla
+              consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim
+              justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.</p>
+            <div class="status-card xsmall info" style="margin-top: var(--space-md);">
+              <span class="icon-lucide icon-info"></span>
+              Acceptance is required to use all features of the platform.
+            </div>
+          </div>
+          <div class="dialog-footer">
+            <div class="dialog-footer-left"></div>
+            <div class="dialog-footer-right">
+              <button class="btn secondary" onclick="closeDialog('scrim-terms')">Decline</button>
+              <button class="btn primary" onclick="closeDialog('scrim-terms')">Accept Terms</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Media / Detail (custom, non-modal) -->
+      <div class="dialog-scrim" id="scrim-media" data-modal="false" role="dialog" aria-modal="false"
+        aria-labelledby="title-media">
+        <div class="dialog-box" data-size="md" style="width: 680px;">
+          <div class="dialog-header">
+            <div class="dialog-title-group">
+              <h3 class="dialog-title" id="title-media">system-dashboard-v2.png</h3>
+              <p class="dialog-subtitle">Uploaded 2 hours ago · 1.4 MB</p>
+            </div>
+            <button class="btn icon ghost" onclick="closeDialog('scrim-media')" aria-label="Close">
+              <span class="icon-lucide icon-x"></span>
+            </button>
+          </div>
+          <div class="dialog-content">
+            <div
+              style="width: 100%; aspect-ratio: 16/9; background: var(--color-bg-tertiary); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-md);">
+              <span class="icon-lucide icon-layoutdashboard" style="width: 48px; height: 48px; opacity: 0.25;"></span>
+            </div>
+            <p style="color: var(--color-text-secondary); font-size: var(--fs-small); margin: 0 0 var(--space-sm) 0;">A
+              screenshot of the real-time monitoring dashboard showing live telemetry from 24 nodes with a summary
+              status panel.</p>
+            <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
+              <span class="badge outlined info">PNG</span>
+              <span class="badge outlined">1920 × 1080</span>
+              <span class="badge outlined">1.4 MB</span>
+            </div>
+          </div>
+          <div class="dialog-footer">
+            <div class="dialog-footer-left"></div>
+            <div class="dialog-footer-right">
+              <button class="btn secondary" onclick="closeDialog('scrim-media')">Close</button>
+              <button class="btn primary sz-small">Download</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. Danger (sm, modal) -->
+      <div class="dialog-scrim" id="scrim-danger" data-modal="true" role="dialog" aria-modal="true"
+        aria-labelledby="title-danger">
+        <div class="dialog-box" data-size="sm">
+          <div class="dialog-header">
+            <div class="dialog-title-group">
+              <h3 class="dialog-title" id="title-danger" style="color: var(--color-error-text);">Permanently delete
+                account?</h3>
+            </div>
+            <button class="btn icon ghost" onclick="closeDialog('scrim-danger')" aria-label="Close">
+              <span class="icon-lucide icon-x"></span>
+            </button>
+          </div>
+          <div class="dialog-content">
+            <div class="status-card xsmall error" style="margin-bottom: var(--space-md);">
+              <span class="icon-lucide icon-alerttriangle"></span>
+              This action is irreversible.
+            </div>
+            <p style="margin: 0; color: var(--color-text-secondary); font-size: var(--fs-small);">This will permanently
+              erase your account, all data, projects, and API keys. This action <strong>cannot be reversed</strong>
+              under any circumstances.</p>
+          </div>
+          <div class="dialog-footer">
+            <div class="dialog-footer-left"></div>
+            <div class="dialog-footer-right">
+              <button class="btn secondary" onclick="closeDialog('scrim-danger')">Cancel</button>
+              <button class="btn danger" onclick="closeDialog('scrim-danger')">Delete Account</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+    <section class="section" id="section-status-cards">
+      <h2 class="h2 section-title">Status Cards</h2>
+
+      <div style="display: flex; flex-direction: column; gap: var(--space-xl);">
+
+        <!-- Part A: Variants Showcase (Short vs Long Text) -->
+        <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+          <h3 class="h4" style="font-weight: var(--fw-semibold); color: var(--color-text-secondary);">Variants & Text
+            Lengths</h3>
+          <div
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-lg);">
+
+            <!-- Default Variant Card -->
+            <div
+              style="padding: var(--space-md); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); background: var(--color-bg-secondary); display: flex; flex-direction: column; gap: var(--space-md);">
+              <h4 class="small"
+                style="font-weight: var(--fw-semibold); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
+                Default Variant</h4>
+              <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
+                <div class="status-card info">
+                  <span class="icon-lucide icon-bell"></span>
+                  <span><strong>Short:</strong> System is online.</span>
+                </div>
+                <div class="status-card success">
+                  <span class="icon-lucide icon-check"></span>
+                  <span><strong>Long:</strong> The background transaction process completed successfully. All scheduled
+                    batch updates have been committed to the primary database instance with zero errors.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Outlined Variant Card -->
+            <div
+              style="padding: var(--space-md); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); background: var(--color-bg-secondary); display: flex; flex-direction: column; gap: var(--space-md);">
+              <h4 class="small"
+                style="font-weight: var(--fw-semibold); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
+                Outlined Variant</h4>
+              <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
+                <div class="status-card outlined warning">
+                  <span class="icon-lucide icon-clock3"></span>
+                  <span><strong>Short:</strong> Sync is pending.</span>
+                </div>
+                <div class="status-card outlined error">
+                  <span class="icon-lucide icon-x"></span>
+                  <span><strong>Long:</strong> Connection timeout occurred during backup replication. The client was
+                    unable to handshake with the replica endpoint within 3000ms. Please check your security group
+                    rules.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Emphasized Variant Card -->
+            <div
+              style="padding: var(--space-md); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); background: var(--color-bg-secondary); display: flex; flex-direction: column; gap: var(--space-md);">
+              <h4 class="small"
+                style="font-weight: var(--fw-semibold); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
+                Emphasized Variant</h4>
+              <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
+                <div class="status-card emphasized info">
+                  <span class="icon-lucide icon-bell"></span>
+                  <span><strong>Short:</strong> New update available.</span>
+                </div>
+                <div class="status-card emphasized success">
+                  <span class="icon-lucide icon-check"></span>
+                  <span><strong>Long:</strong> Deployment finished. Version 2.4.0 is now live across all edge zones.
+                    Global CDN cache is currently purging in the background and will complete shortly.</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Part B: Sizing (xsmall, small, medium, large) -->
+        <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+          <h3 class="h4" style="font-weight: var(--fw-semibold); color: var(--color-text-secondary);">Sizing Options
+          </h3>
+          <div
+            style="display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-md); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); background: var(--color-bg-secondary);">
+
+            <div style="display: flex; flex-direction: column; gap: var(--space-xs);">
+              <span class="detail-card-label">XSmall (.xsmall) — Input Helper / Very Small Card</span>
+              <div class="status-card xsmall emphasized error">
+                <span class="icon-lucide icon-x"></span>
+                <span>Please enter a valid telemetry IP address (e.g. 192.168.1.100).</span>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: var(--space-xs);">
+              <span class="detail-card-label">Small (.small) — Compact Banner</span>
+              <div class="status-card small emphasized warning">
+                <span class="icon-lucide icon-clock3"></span>
+                <span>Database migration in progress. Connection pooling has been throttled to conserve
+                  resources.</span>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: var(--space-xs);">
+              <span class="detail-card-label">Medium (Default / .medium) — Standard Banner</span>
+              <div class="status-card emphasized info">
+                <span class="icon-lucide icon-bell"></span>
+                <span>System maintenance is scheduled for Tuesday, June 9th at 03:00 UTC. Expect short intervals of
+                  latency.</span>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: var(--space-xs);">
+              <span class="detail-card-label">Large (.large) — Page-level Alert</span>
+              <div class="status-card large emphasized success">
+                <span class="icon-lucide icon-check"></span>
+                <span>Replication complete: Secondary data nodes have synchronized successfully. 12.8M files processed
+                  in 42 seconds.</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 2. Status Badges -->
+    <section class="section" id="section-status-badges">
+      <h2 class="h2 section-title">Status Badges</h2>
+
+      <div style="display: flex; flex-direction: column; gap: var(--space-xl);">
+
+        <!-- Grid for Variants (Default, Outlined, Emphasized, Solid) -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-lg);">
+
+          <!-- Default Variant Card -->
+          <div
+            style="padding: var(--space-md); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); background: var(--color-bg-secondary); display: flex; flex-direction: column; gap: var(--space-md);">
+            <h3 class="h4"
+              style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-bottom: 2px;">Default
+              Badges</h3>
+            <div style="display: flex; flex-direction: column; gap: var(--space-xs); align-items: flex-start;">
+              <span class="badge info"><span class="icon-lucide icon-bell"></span>Info Alert</span>
+              <span class="badge success"><span class="icon-lucide icon-check"></span>Success State</span>
+              <span class="badge warning"><span class="icon-lucide icon-clock3"></span>Pending Warning</span>
+              <span class="badge error"><span class="icon-lucide icon-x"></span>Error Failed</span>
+            </div>
+          </div>
+
+          <!-- Outlined Variant Card -->
+          <div
+            style="padding: var(--space-md); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); background: var(--color-bg-secondary); display: flex; flex-direction: column; gap: var(--space-md);">
+            <h3 class="h4"
+              style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-bottom: 2px;">Outlined
+              Badges</h3>
+            <div style="display: flex; flex-direction: column; gap: var(--space-xs); align-items: flex-start;">
+              <span class="badge outlined info"><span class="icon-lucide icon-bell"></span>Info Alert</span>
+              <span class="badge outlined success"><span class="icon-lucide icon-check"></span>Success State</span>
+              <span class="badge outlined warning"><span class="icon-lucide icon-clock3"></span>Pending Warning</span>
+              <span class="badge outlined error"><span class="icon-lucide icon-x"></span>Error Failed</span>
+            </div>
+          </div>
+
+          <!-- Emphasized Variant Card -->
+          <div
+            style="padding: var(--space-md); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); background: var(--color-bg-secondary); display: flex; flex-direction: column; gap: var(--space-md);">
+            <h3 class="h4"
+              style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-bottom: 2px;">
+              Emphasized Badges</h3>
+            <div style="display: flex; flex-direction: column; gap: var(--space-xs); align-items: flex-start;">
+              <span class="badge emphasized info"><span class="icon-lucide icon-bell"></span>Info Alert</span>
+              <span class="badge emphasized success"><span class="icon-lucide icon-check"></span>Success State</span>
+              <span class="badge emphasized warning"><span class="icon-lucide icon-clock3"></span>Pending Warning</span>
+              <span class="badge emphasized error"><span class="icon-lucide icon-x"></span>Error Failed</span>
+            </div>
+          </div>
+
+          <!-- Solid Variant Card -->
+          <div
+            style="padding: var(--space-md); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); background: var(--color-bg-secondary); display: flex; flex-direction: column; gap: var(--space-md);">
+            <h3 class="h4"
+              style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-bottom: 2px;">Solid
+              Badges</h3>
+            <div style="display: flex; flex-direction: column; gap: var(--space-xs); align-items: flex-start;">
+              <span class="badge solid info"><span class="icon-lucide icon-bell"></span>Info Alert</span>
+              <span class="badge solid success"><span class="icon-lucide icon-check"></span>Success State</span>
+              <span class="badge solid warning"><span class="icon-lucide icon-clock3"></span>Pending Warning</span>
+              <span class="badge solid error"><span class="icon-lucide icon-x"></span>Error Failed</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Row for Sizes and Icon Placements -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-lg);">
+
+          <!-- Badge Sizes Card -->
+          <div
+            style="padding: var(--space-md); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); background: var(--color-bg-secondary); display: flex; flex-direction: column; gap: var(--space-md);">
+            <h3 class="h4"
+              style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-bottom: 2px;">Badge
+              Sizes</h3>
+            <div style="display: flex; align-items: center; gap: var(--space-md); flex-wrap: wrap;">
+
+              <div style="display: flex; flex-direction: column; gap: var(--space-xs); align-items: flex-start;">
+                <span class="detail-card-label">XSmall (sz-xsmall)</span>
+                <span class="badge sz-xsmall emphasized success"><span
+                    class="icon-lucide icon-check"></span>Success</span>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: var(--space-xs); align-items: flex-start;">
+                <span class="detail-card-label">Small (sz-small / Default)</span>
+                <span class="badge emphasized success"><span class="icon-lucide icon-check"></span>Success</span>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: var(--space-xs); align-items: flex-start;">
+                <span class="detail-card-label">Large (sz-large)</span>
+                <span class="badge sz-large emphasized success"><span
+                    class="icon-lucide icon-check"></span>Success</span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Icon Placements Card -->
+          <div
+            style="padding: var(--space-md); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); background: var(--color-bg-secondary); display: flex; flex-direction: column; gap: var(--space-md);">
+            <h3 class="h4"
+              style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-bottom: 2px;">Optional
+              Icon Placements</h3>
+            <div style="display: flex; align-items: center; gap: var(--space-md); flex-wrap: wrap;">
+
+              <div style="display: flex; flex-direction: column; gap: var(--space-xs); align-items: flex-start;">
+                <span class="detail-card-label">Start Icon Only</span>
+                <span class="badge emphasized info"><span class="icon-lucide icon-bell"></span>Notification</span>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: var(--space-xs); align-items: flex-start;">
+                <span class="detail-card-label">End Icon Only</span>
+                <span class="badge emphasized info">Notification<span class="icon-lucide icon-bell"></span></span>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: var(--space-xs); align-items: flex-start;">
+                <span class="detail-card-label">Both Icons</span>
+                <span class="badge emphasized info"><span class="icon-lucide icon-bell"></span>Notification<span
+                    class="icon-lucide icon-search"></span></span>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="section" id="section-stats">
+      <h2 class="h2 section-title">Stats</h2>
+
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-xl); align-items: start;">
+
+        <!-- Column 1: Standalone Stats -->
+        <div style="display: flex; flex-direction: column; gap: var(--space-xl);">
+
+          <!-- Variant 1 & Variant 2 Demos -->
+          <div
+            style="display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-md); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); background: var(--color-bg-secondary);">
+            <h3 class="h4"
+              style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-bottom: var(--space-xs);">
+              Standalone Simple & Info Stats</h3>
+
+            <!-- Variant 1 (Screenshot 1) -->
+            <div class="stat" style="margin-bottom: var(--space-lg);">
+              <span class="stat-label">Unique visitors</span>
+              <div class="stat-value-container">
+                <span class="stat-value">192.1<span class="stat-unit">k</span></span>
+              </div>
+            </div>
+
+            <!-- Variant 2 (Screenshot 2) -->
+            <div class="stat">
+              <span class="stat-label">
+                Unique
+                <span class="tooltip-trigger stat-info-trigger" role="button" aria-label="More information">
+                  <span class="icon-lucide icon-info"></span>
+                  <span class="tooltip tooltip-top">Some info</span>
+                </span>
+              </span>
+              <div class="stat-value-container">
+                <span class="stat-value">192.1<span class="stat-unit">k</span></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Variant 3 Demo -->
+          <div
+            style="display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-md); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); background: var(--color-bg-secondary);">
+            <h3 class="h4"
+              style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-bottom: var(--space-xs);">
+              Stat with Muted Help & Badge</h3>
+
+            <!-- Variant 3 (Screenshot 3) -->
+            <div class="stat">
+              <span class="stat-label">Unique</span>
+              <div class="stat-value-container">
+                <span class="stat-value">$8,456.40</span>
+                <span class="badge sz-xsmall emphasized success"
+                  style="align-self: center; margin-left: var(--space-xs);">
+                  <span class="icon-lucide icon-arrowup" style="width: 10px; height: 10px;"></span>
+                  12%
+                </span>
+              </div>
+              <span class="stat-help">since last month</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Column 2: Card Containers -->
+        <div style="display: flex; flex-direction: column; gap: var(--space-xl);">
+
+          <div
+            style="display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-md); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); background: var(--color-bg-secondary);">
+            <h3 class="h4"
+              style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-bottom: var(--space-xs);">
+              Grouped Stat Cards</h3>
+
+            <div style="display: flex; flex-direction: column; gap: var(--space-md); width: 100%;">
+
+              <!-- Variant 4 (Screenshot 4 - Card Container) -->
+              <div class="stat-card">
+                <div class="stat">
+                  <span class="stat-label">Unique visitors</span>
+                  <div class="stat-value-container">
+                    <span class="stat-value">192.1<span class="stat-unit">k</span></span>
+                    <span class="stat-trend-text success">
+                      <span class="icon-lucide icon-arrowup stat-trend-icon"></span>
+                      12%
+                    </span>
+                  </div>
+                  <span class="stat-help">Compared to last week</span>
+                </div>
+              </div>
+
+              <!-- Extra Variant for visual variety: Decreasing Stat card -->
+              <div class="stat-card">
+                <div class="stat">
+                  <span class="stat-label">Bounce Rate</span>
+                  <div class="stat-value-container">
+                    <span class="stat-value">48.3<span class="stat-unit">%</span></span>
+                    <span class="stat-trend-text error">
+                      <span class="icon-lucide icon-arrowdown stat-trend-icon"></span>
+                      4.2%
+                    </span>
+                  </div>
+                  <span class="stat-help">Since last deployment cycle</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tooltips Section -->
+    <section class="section" id="section-tooltips">
+      <h2 class="h2 section-title">Tooltips</h2>
+
+      <div style="display: flex; flex-direction: column; gap: var(--space-lg);">
+        <p
+          style="color: var(--color-text-secondary); max-width: 600px; margin: 0 0 var(--space-sm) 0; font-size: var(--fs-small);">
+          Pure-CSS tooltips triggered on hover or focus. Supports top, bottom, left, and right orientations with dynamic
+          scaling and self-aligning border arrows.
+        </p>
+
+        <div
+          style="display: flex; flex-wrap: wrap; gap: var(--space-2xl); padding: var(--space-xl); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); background: var(--color-bg-secondary); justify-content: center; align-items: center; min-height: 120px;">
+
+          <!-- Tooltip Top -->
+          <div class="tooltip-trigger btn secondary" style="padding: var(--space-xs) var(--space-sm);">
+            <span>Tooltip Top</span>
+            <span class="tooltip tooltip-top">Tooltip on top</span>
+          </div>
+
+          <!-- Tooltip Bottom -->
+          <div class="tooltip-trigger btn secondary" style="padding: var(--space-xs) var(--space-sm);">
+            <span>Tooltip Bottom</span>
+            <span class="tooltip tooltip-bottom">Tooltip on bottom</span>
+          </div>
+
+          <!-- Tooltip Left -->
+          <div class="tooltip-trigger btn secondary" style="padding: var(--space-xs) var(--space-sm);">
+            <span>Tooltip Left</span>
+            <span class="tooltip tooltip-left">Tooltip on left</span>
+          </div>
+
+          <!-- Tooltip Right -->
+          <div class="tooltip-trigger btn secondary" style="padding: var(--space-xs) var(--space-sm);">
+            <span>Tooltip Right</span>
+            <span class="tooltip tooltip-right">Tooltip on right</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Toasts Section -->
+    <section class="section" id="section-toasts">
+      <h2 class="h2 section-title">Toasts</h2>
+      <p
+        style="color: var(--color-text-secondary); max-width: 600px; margin: 0 0 var(--space-lg) 0; font-size: var(--fs-small);">
+        A stackable, interactive toast notification system positioned in the bottom-right corner. Supports Info,
+        Success, Error, and Warning variants with customizable auto-dismiss timers, custom icons, and action buttons.
+      </p>
+
+      <div
+        style="display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-lg); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); background: var(--color-bg-secondary);">
+        <div style="display: flex; flex-wrap: wrap; gap: var(--space-md); align-items: center;">
+          <button class="btn secondary"
+            onclick="window.showToast({ message: 'This is an information message.', type: 'info' })">
+            <span class="btn-start-icon"><span class="icon-lucide icon-info"></span></span>
+            <span>Trigger Info Toast</span>
+          </button>
+          <button class="btn secondary"
+            onclick="window.showToast({ message: 'Action completed successfully!', type: 'success' })">
+            <span class="btn-start-icon"><span class="icon-lucide icon-check"></span></span>
+            <span>Trigger Success Toast</span>
+          </button>
+          <button class="btn secondary"
+            onclick="window.showToast({ message: 'Failed to update system cache.', type: 'error' })">
+            <span class="btn-start-icon"><span class="icon-lucide icon-circlex"></span></span>
+            <span>Trigger Error Toast</span>
+          </button>
+          <button class="btn secondary"
+            onclick="window.showToast({ message: 'Disk space is running low (under 10%).', type: 'warn' })">
+            <span class="btn-start-icon"><span class="icon-lucide icon-trianglealert"></span></span>
+            <span>Trigger Warning Toast</span>
+          </button>
+        </div>
+
+        <div
+          style="margin-top: var(--space-md); border-top: 1px solid var(--color-border); padding-top: var(--space-md); display: flex; flex-wrap: wrap; gap: var(--space-md); align-items: center;">
+          <button class="btn primary"
+            onclick="window.showToast({ message: 'We have updated our terms of service.', type: 'info', duration: 8000 })">
+            <span>Toast with 8s Duration</span>
+          </button>
+          <button class="btn danger"
+            onclick="window.showToast({ message: 'Database connection failed. Retrying in 5s...', type: 'error', duration: Infinity })">
+            <span>Trigger Persistent Toast (Infinity)</span>
+          </button>
+          <button class="btn secondary" onclick="window.triggerActionToast()">
+            <span>Toast with Custom Actions</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Loaders & Spinners Section -->
+    <section class="section" id="section-loaders">
+      <h2 class="h2 section-title">Loaders & Spinners</h2>
+      <p
+        style="color: var(--color-text-secondary); max-width: 600px; margin: 0 0 var(--space-lg) 0; font-size: var(--fs-small);">
+        Versatile loading spinner components and screen overlays for asynchronous states. Compatible with themes, custom
+        colors, sizing modifiers, and buttons.
+      </p>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-xl);">
+
+        <!-- Column 1: Sizing and Inline Usage -->
+        <div
+          style="display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-lg); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); background: var(--color-bg-secondary);">
+          <h3 class="h4" style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-top: 0;">1.
+            Spinner Sizing</h3>
+
+          <div
+            style="display: flex; align-items: center; gap: var(--space-lg); flex-wrap: wrap; margin-bottom: var(--space-md);">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: var(--space-xs);">
+              <span class="spinner sz-xsmall"></span>
+              <span class="xsmall muted">12px (XSmall)</span>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: var(--space-xs);">
+              <span class="spinner sz-small"></span>
+              <span class="xsmall muted">16px (Small)</span>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: var(--space-xs);">
+              <span class="spinner"></span>
+              <span class="xsmall muted">1em (Default)</span>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: var(--space-xs);">
+              <span class="spinner sz-large"></span>
+              <span class="xsmall muted">32px (Large)</span>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: var(--space-xs);">
+              <span class="spinner sz-xlarge" style="color: var(--color-input-border-focus);"></span>
+              <span class="xsmall muted">48px (XLarge)</span>
+            </div>
+          </div>
+
+          <h3 class="h4"
+            style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-top: var(--space-sm);">2.
+            Custom Colors & Text Inline</h3>
+          <div style="display: flex; flex-direction: column; gap: var(--space-xs); font-size: var(--fs-small);">
+            <div style="display: flex; align-items: center; gap: var(--space-sm); color: var(--color-info-text);">
+              <span class="spinner sz-small"></span>
+              <span>Fetching metadata...</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: var(--space-sm); color: var(--color-success-text);">
+              <span class="spinner sz-small"></span>
+              <span>Uploading files...</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: var(--space-sm); color: var(--color-error-text);">
+              <span class="spinner sz-small"></span>
+              <span>Retrying connection...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 2: Button & Full-Screen Actions -->
+        <div
+          style="display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-lg); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); background: var(--color-bg-secondary);">
+          <h3 class="h4" style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-top: 0;">3.
+            Button Loading & Screen Overlay</h3>
+
+          <!-- Interactive buttons -->
+          <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap; margin-bottom: var(--space-sm);">
+            <button class="btn primary" id="demo-load-btn-1">
+              <span>Save Changes</span>
+            </button>
+            <button class="btn secondary" id="demo-load-btn-2">
+              <span class="btn-start-icon"><span class="icon-lucide icon-trash2"></span></span>
+              <span>Delete Record</span>
+            </button>
+            <button class="btn danger" id="demo-load-btn-3">
+              <span>Confirm</span>
+            </button>
+          </div>
+
+          <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap; margin-bottom: var(--space-md);">
+            <button class="btn secondary" onclick="toggleDemoButtonsLoading()">
+              <span>Toggle Loading State</span>
+            </button>
+          </div>
+
+          <div style="border-top: 1px solid var(--color-border); padding-top: var(--space-md);">
+            <h4 class="h5" style="margin-top: 0; margin-bottom: var(--space-sm); color: var(--color-text-primary);">
+              Fullscreen Overlay Loader</h4>
+            <p class="xsmall muted" style="margin-top: 0; margin-bottom: var(--space-md);">
+              Triggers a full-screen blurred modal spinner overlay blocking pointer interactions. Auto-hides after 3
+              seconds.
+            </p>
+            <button class="btn primary" onclick="triggerFullscreenLoaderDemo()">
+              <span>Show Fullscreen Loader (3s)</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Floating Dropdown & Popovers Showcase -->
+    <section class="section" id="section-dropdowns-popovers">
+      <h2 class="h2 section-title">Dropdowns & Popovers</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-2xl); align-items: start;">
+        
+        <!-- Column 1: Dropdown Menus -->
+        <div>
+          <h3 class="h4" style="font-weight: var(--fw-semibold); margin-bottom: var(--space-md); color: var(--color-text-secondary);">Interactive Dropdowns</h3>
+          <p class="small muted" style="margin-bottom: var(--space-lg);">
+            Absolute-positioned menus supporting click-outside detection, ESC close, and multiple direction alignments (top, bottom, left, right).
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+            <!-- Click Triggered Dropdowns -->
+            <div>
+              <div class="small" style="font-weight: var(--fw-semibold); margin-bottom: var(--space-xs); color: var(--color-text-primary);">Click Triggers (with alignments)</div>
+              <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
+                
+                <!-- Bottom Left -->
+                <div class="dropdown">
+                  <button class="btn secondary dropdown-trigger">
+                    <span>Bottom Left</span>
+                    <span class="icon-lucide icon-chevrondown" style="font-size: 14px;"></span>
+                  </button>
+                  <div class="dropdown-menu align-bottom-left">
+                    <button class="btn menu">
+                      <span class="icon-lucide icon-user" style="font-size: 16px; margin-right: var(--space-xs);"></span>
+                      <span>My Profile</span>
+                    </button>
+                    <button class="btn menu">
+                      <span class="icon-lucide icon-settings" style="font-size: 16px; margin-right: var(--space-xs);"></span>
+                      <span>Account Settings</span>
+                    </button>
+                    <hr class="dropdown-divider">
+                    <button class="btn menu danger">
+                      <span class="icon-lucide icon-logout" style="font-size: 16px; margin-right: var(--space-xs);"></span>
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Bottom Right -->
+                <div class="dropdown">
+                  <button class="btn secondary dropdown-trigger">
+                    <span>Bottom Right</span>
+                    <span class="icon-lucide icon-chevrondown" style="font-size: 14px;"></span>
+                  </button>
+                  <div class="dropdown-menu align-bottom-right">
+                    <button class="btn menu">
+                      <span class="icon-lucide icon-bell" style="font-size: 16px; margin-right: var(--space-xs);"></span>
+                      <span>Notifications</span>
+                    </button>
+                    <button class="btn menu">
+                      <span class="icon-lucide icon-shield" style="font-size: 16px; margin-right: var(--space-xs);"></span>
+                      <span>Privacy Shield</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Top Left -->
+                <div class="dropdown">
+                  <button class="btn secondary dropdown-trigger">
+                    <span>Top Left</span>
+                    <span class="icon-lucide icon-chevronup" style="font-size: 14px;"></span>
+                  </button>
+                  <div class="dropdown-menu align-top-left">
+                    <button class="btn menu">Share Link</button>
+                    <button class="btn menu">Embed Code</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Hover / Side Placements -->
+            <div style="margin-top: var(--space-sm);">
+              <div class="small" style="font-weight: var(--fw-semibold); margin-bottom: var(--space-xs); color: var(--color-text-primary);">Hover & Side Placements</div>
+              <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
+                
+                <!-- Hover Dropdown -->
+                <div class="dropdown trigger-hover">
+                  <button class="btn outlined primary">
+                    <span>Hover Dropdown</span>
+                    <span class="icon-lucide icon-chevrondown" style="font-size: 14px;"></span>
+                  </button>
+                  <div class="dropdown-menu align-bottom-left">
+                    <button class="btn menu">Option Alpha</button>
+                    <button class="btn menu">Option Beta</button>
+                    <button class="btn menu">Option Gamma</button>
+                  </div>
+                </div>
+
+                <!-- Right-aligned Menu -->
+                <div class="dropdown">
+                  <button class="btn secondary dropdown-trigger">
+                    <span>Right Side</span>
+                    <span class="icon-lucide icon-chevronright" style="font-size: 14px;"></span>
+                  </button>
+                  <div class="dropdown-menu align-right-top">
+                    <button class="btn menu">Quick Edit</button>
+                    <button class="btn menu">Duplicate</button>
+                    <button class="btn menu danger">Delete Permanently</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Column 2: Popovers -->
+        <div>
+          <h3 class="h4" style="font-weight: var(--fw-semibold); margin-bottom: var(--space-md); color: var(--color-text-secondary);">Popovers & Hover Cards</h3>
+          <p class="small muted" style="margin-bottom: var(--space-lg);">
+            Rich components displaying formatted text or HTML structures on hover or click. Perfect for profile previews and inline documentation.
+          </p>
+
+          <div style="display: flex; gap: var(--space-md); flex-wrap: wrap;">
+            
+            <!-- Click Triggered Popover -->
+            <div class="popover">
+              <button class="btn secondary popover-trigger" data-trigger="click">
+                <span>Click Popover</span>
+              </button>
+              <div class="popover-card align-top-center">
+                <div class="popover-header" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-xs); margin-bottom: var(--space-sm);">
+                  <div class="small" style="font-weight: var(--fw-bold); color: var(--color-text-primary);">Storage Alert</div>
+                  <span class="badge emphasized warning">92% Full</span>
+                </div>
+                <div class="popover-body">
+                  Your team has used 92% of the allocated cloud workspace. Upgrade plan to prevent service disruption.
+                  <div style="margin-top: var(--space-md); display: flex; justify-content: flex-end;">
+                    <button class="btn primary sz-small">Upgrade Plan</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hover Card Popover -->
+            <div class="popover trigger-hover">
+              <button class="btn outlined secondary">
+                <span>Hover User Profile</span>
+              </button>
+              <div class="popover-card align-bottom-center" style="width: 300px;">
+                <div style="display: flex; gap: var(--space-md); align-items: center;">
+                  <div style="width: 48px; height: 48px; border-radius: 50%; background-color: var(--color-input-border-focus); display: flex; align-items: center; justify-content: center; color: white; font-weight: var(--fw-bold); font-size: 18px;">
+                    VM
+                  </div>
+                  <div>
+                    <div style="font-weight: var(--fw-semibold); color: var(--color-text-primary); font-size: var(--fs-small);">Vedant Mali</div>
+                    <div class="xsmall muted" style="margin-bottom: 4px;">Senior Lead Developer</div>
+                    <span class="badge subtle success sz-small">Active Now</span>
+                  </div>
+                </div>
+                <div class="popover-body" style="margin-top: var(--space-md); border-top: 1px solid var(--color-border); padding-top: var(--space-sm);">
+                  Designing system boilerplates, automating QA test runs, and refining modern interface specs.
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Empty States Section -->
+    <section class="section" id="section-empty-states">
+      <h2 class="h2 section-title">Empty State Layouts</h2>
+      <p class="small muted" style="margin-top: 0; margin-bottom: var(--space-xl); max-width: 600px;">
+        Standardized layouts to display when a section, card, list, table, or workspace contains no records. Available in small, medium (default), and large sizes.
+      </p>
+
+      <div style="display: flex; flex-direction: column; gap: var(--space-2xl);">
+        
+        <!-- Row 1: Medium (Default) Empty State -->
+        <div style="background-color: var(--color-bg-secondary); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-xl);">
+          <div class="small muted" style="font-weight: var(--fw-semibold); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-xs); margin-bottom: var(--space-md);">
+            Medium / Default Size (Standard Table/Result View)
+          </div>
+          <div class="empty-state">
+            <div class="empty-state-icon">
+              <span class="icon-lucide icon-folderopen"></span>
+            </div>
+            <h3 class="empty-state-title">No files uploaded yet</h3>
+            <p class="empty-state-description">
+              Get started by uploading your design drafts or portfolio document files to synchronize them.
+            </p>
+            <div class="empty-state-actions">
+              <button class="btn primary">
+                <span class="icon-lucide icon-upload" style="font-size: 16px; margin-right: var(--space-xs);"></span>
+                <span>Upload Files</span>
+              </button>
+              <button class="btn secondary">Learn More</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-xl);">
+          
+          <!-- Column 1: Small Empty State -->
+          <div style="background-color: var(--color-bg-secondary); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); display: flex; flex-direction: column;">
+            <div class="small muted" style="font-weight: var(--fw-semibold); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-xs); margin-bottom: var(--space-md);">
+              Small Size (Sidebar / Widget Card)
+            </div>
+            <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center;">
+              <div class="empty-state sz-small">
+                <div class="empty-state-icon">
+                  <span class="icon-lucide icon-belloff"></span>
+                </div>
+                <h3 class="empty-state-title">No notifications</h3>
+                <p class="empty-state-description">
+                  We will notify you here when activity updates occur.
+                </p>
+                <div class="empty-state-actions">
+                  <button class="btn secondary sz-small">Configure Settings</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: Large Empty State -->
+          <div style="background-color: var(--color-bg-secondary); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg);">
+            <div class="small muted" style="font-weight: var(--fw-semibold); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-xs); margin-bottom: var(--space-md);">
+              Large Size (Dashboard / Full Page View)
+            </div>
+            <div class="empty-state sz-large">
+              <div class="empty-state-icon">
+                <span class="icon-lucide icon-database"></span>
+              </div>
+              <h3 class="empty-state-title">Database connection offline</h3>
+              <p class="empty-state-description">
+                We couldn't retrieve any project databases from your environment. Please configure your credentials or try reconnecting your server instance.
+              </p>
+              <div class="empty-state-actions">
+                <button class="btn primary">
+                  <span class="icon-lucide icon-refreshcw" style="font-size: 16px; margin-right: var(--space-xs);"></span>
+                  <span>Try Reconnecting</span>
+                </button>
+                <button class="btn secondary">View Connection Status</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. Offline Icons (Lucide CSS Masks) -->
+    <section class="section" id="section-offline-icons">
+      <h2 class="h2 section-title">Offline Icons (Lucide CSS Masks)</h2>
+
+      <div style="display: grid; grid-template-columns: 2.5fr 1fr; gap: var(--space-2xl); align-items: start;">
+
+        <!-- Column 1: Core Lucide Icons Grid -->
+        <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+          <h3 class="h4" style="font-weight: var(--fw-semibold); color: var(--color-text-secondary);">Core Icon Grid (46
+            Icons, 24px)</h3>
+
+          <div
+            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: var(--space-sm); text-align: center;">
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-layoutdashboard"
+                style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                LayoutDashboard</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-layoutgrid"
+                style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                LayoutGrid</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-panelleft"
+                style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                PanelLeft</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-panelright"
+                style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                PanelRight</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-sidebar" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Sidebar</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-home" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Home</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-gauge" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Gauge</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-chartcolumn"
+                style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                ChartColumn</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-chartbar" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                ChartBar</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-chartline"
+                style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                ChartLine</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-piechart" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                PieChart</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-trendingup"
+                style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                TrendingUp</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-trendingdown"
+                style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                TrendingDown</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-activity" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Activity</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-calendar" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Calendar</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-clock3" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Clock3</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-bell" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Bell</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-info" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Info</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-search" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Search</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-filter" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Filter</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-users" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Users</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-user" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                User</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-settings" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Settings</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-shield" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Shield</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-database" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Database</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-server" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Server</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-folder" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Folder</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-filetext" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                FileText</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-creditcard"
+                style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                CreditCard</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-wallet" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Wallet</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-receipt" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Receipt</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-plus" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Plus</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-minus" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Minus</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-check" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Check</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-x" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                X</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-edit" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Edit</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-trash2" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Trash2</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-download" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Download</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-upload" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Upload</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-copy" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Copy</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-share2" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Share2</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-cornerdownleft"
+                style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                CornerDownLeft</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-chevrondown"
+                style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                ChevronDown</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-terminal" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                Terminal</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-arrowup" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                ArrowUp</div>
+            </div>
+
+            <div
+              style="padding: var(--space-md) var(--space-xs); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-xs); background: var(--color-bg-secondary);">
+              <span class="icon-lucide icon-arrowdown"
+                style="font-size: 24px; color: var(--color-text-primary);"></span>
+              <div
+                style="font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                ArrowDown</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 2: Home Icon Variation Demos -->
+        <div style="display: flex; flex-direction: column; gap: var(--space-xl);">
+
+          <!-- Section A: Different Sizes -->
+          <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+            <h3 class="h4" style="font-weight: var(--fw-semibold); color: var(--color-text-secondary);">Icon Sizing (xs
+              to lg)</h3>
+            <div
+              style="display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-md); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); background: var(--color-bg-secondary);">
+
+              <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <div
+                  style="width: 50px; font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium);">
+                  xs (12px)</div>
+                <span class="icon-lucide icon-home" style="font-size: 12px; color: var(--color-text-primary);"></span>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <div
+                  style="width: 50px; font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium);">
+                  sm (16px)</div>
+                <span class="icon-lucide icon-home" style="font-size: 16px; color: var(--color-text-primary);"></span>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <div
+                  style="width: 50px; font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium);">
+                  md (24px)</div>
+                <span class="icon-lucide icon-home" style="font-size: 24px; color: var(--color-text-primary);"></span>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <div
+                  style="width: 50px; font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium);">
+                  lg (36px)</div>
+                <span class="icon-lucide icon-home" style="font-size: 36px; color: var(--color-text-primary);"></span>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <div
+                  style="width: 50px; font-size: var(--fs-xsmall); color: var(--color-text-muted); font-weight: var(--fw-medium);">
+                  xl (48px)</div>
+                <span class="icon-lucide icon-home" style="font-size: 48px; color: var(--color-text-primary);"></span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Section B: Different Colors -->
+          <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+            <h3 class="h4" style="font-weight: var(--fw-semibold); color: var(--color-text-secondary);">Icon Colors
+              (Neutral + Status)</h3>
+            <div
+              style="display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-md); border: 1px dashed var(--color-input-border); border-radius: var(--radius-md); background: var(--color-bg-secondary);">
+
+              <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <span class="icon-lucide icon-home" style="font-size: 24px; color: var(--color-text-primary);"></span>
+                <div
+                  style="font-size: var(--fs-xsmall); color: var(--color-text-primary); font-weight: var(--fw-semibold);">
+                  Neutral / Primary</div>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <span class="icon-lucide icon-home" style="font-size: 24px; color: var(--color-info-text);"></span>
+                <div
+                  style="font-size: var(--fs-xsmall); color: var(--color-info-text); font-weight: var(--fw-semibold);">
+                  Info Blue</div>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <span class="icon-lucide icon-home" style="font-size: 24px; color: var(--color-success-text);"></span>
+                <div
+                  style="font-size: var(--fs-xsmall); color: var(--color-success-text); font-weight: var(--fw-semibold);">
+                  Success Green</div>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <span class="icon-lucide icon-home" style="font-size: 24px; color: var(--color-warning-text);"></span>
+                <div
+                  style="font-size: var(--fs-xsmall); color: var(--color-warning-text); font-weight: var(--fw-semibold);">
+                  Warning Orange</div>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <span class="icon-lucide icon-home" style="font-size: 24px; color: var(--color-error-text);"></span>
+                <div
+                  style="font-size: var(--fs-xsmall); color: var(--color-error-text); font-weight: var(--fw-semibold);">
+                  Error Red</div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 5. Typography & UI Demo (Manrope) -->
+    <section class="section" id="section-manrope-typescale">
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-2xl); align-items: start;">
+
+        <!-- Left Side: Typography Typescale -->
+        <div>
+          <h2 class="h2 section-title">Manrope Typescale</h2>
+          <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+            <h1 class="h1">Heading 1</h1>
+            <h2 class="h2">Heading 2</h2>
+            <h3 class="h3">Heading 3</h3>
+            <h4 class="h4">Heading 4</h4>
+
+            <p class="regular">Paragraph using a .regular</p>
+            <p class="small">Paragraph using a .small</p>
+            <p class="xsmall">Paragraph using a .xsmall</p>
+
+            <p class="regular muted">Paragraph using a .regular and .muted</p>
+            <p class="small muted">Paragraph using a .small and .muted</p>
+            <p class="xsmall muted">Paragraph using a .xsmall and .muted</p>
+          </div>
+        </div>
+
+        <!-- Right Side: Flat Details UI Demo -->
+        <div>
+          <h2 class="h2 section-title">Flat Details Demo</h2>
+          <div class="detail-card">
+            <!-- Header -->
+            <div class="detail-card-header">
+              <div class="detail-card-title-group">
+                <span class="detail-card-label">Request Code</span>
+                <div class="detail-card-value-group">
+                  <span class="detail-card-code">PT-9939824242</span>
+                  <span class="badge emphasized info">Picked Up</span>
+                </div>
+              </div>
+              <span
+                style="font-size: var(--fs-small); color: var(--color-text-secondary); cursor: pointer; user-select: none;">▼</span>
+            </div>
+
+            <!-- Row 1: Location -->
+            <div class="detail-card-row">
+              <div class="detail-card-row-label">Pickup Information and Location</div>
+              <div class="detail-card-row-content">
+                <div class="detail-card-name">Nergis Sadıklar</div>
+                <div class="detail-card-address">123 Main Street<br>London, UK</div>
+              </div>
+            </div>
+
+            <!-- Row 2: Shipments/Packages -->
+            <div class="detail-card-row">
+              <div class="detail-card-row-label">Service and Package Details</div>
+              <div class="detail-card-row-content">
+                <div class="detail-card-badges">
+                  <span class="badge emphasized">3 Shipments</span>
+                  <span class="badge emphasized">4 Packages</span>
+                  <span class="badge emphasized">22 kg</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 3: Date & Time -->
+            <div class="detail-card-row">
+              <div class="detail-card-row-label">Package Pickup Date and Time</div>
+              <div class="detail-card-row-content" style="font-weight: var(--fw-semibold);">
+                Thursday, December 19, 09:00-20:00
+              </div>
+            </div>
+
+            <!-- Row 4: Note -->
+            <div class="detail-card-row">
+              <div class="detail-card-row-label">Note</div>
+              <div class="detail-card-row-content" style="color: var(--color-text-secondary);">
+                Please make sure to collect all packages from the front door. Call upon arrival if needed.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 6. Color Palette Section -->
+    <section class="section" id="section-color-palette-tokens">
+      <h2 class="h2 section-title">Color Palette Tokens</h2>
+
+      <div class="color-palette-grid">
+        <div class="color-swatch">
+          <div class="color-preview" style="background-color: var(--clr-neutral-50);"></div>
+          <div class="color-details">
+            <div class="color-name small">neutral-50</div>
+            <div class="xsmall">#f8fafc</div>
+          </div>
+        </div>
+
+        <div class="color-swatch">
+          <div class="color-preview" style="background-color: var(--clr-neutral-100);"></div>
+          <div class="color-details">
+            <div class="color-name small">neutral-100</div>
+            <div class="xsmall">#f1f5f9</div>
+          </div>
+        </div>
+
+        <div class="color-swatch">
+          <div class="color-preview" style="background-color: var(--clr-neutral-300);"></div>
+          <div class="color-details">
+            <div class="color-name small">neutral-300</div>
+            <div class="xsmall">#cbd5e1</div>
+          </div>
+        </div>
+
+        <div class="color-swatch">
+          <div class="color-preview" style="background-color: var(--clr-neutral-500);"></div>
+          <div class="color-details">
+            <div class="color-name small">neutral-500</div>
+            <div class="xsmall">#64748b</div>
+          </div>
+        </div>
+
+        <div class="color-swatch">
+          <div class="color-preview" style="background-color: var(--clr-neutral-700);"></div>
+          <div class="color-details">
+            <div class="color-name small">neutral-700</div>
+            <div class="xsmall">#334155</div>
+          </div>
+        </div>
+
+        <div class="color-swatch">
+          <div class="color-preview" style="background-color: var(--clr-neutral-950);"></div>
+          <div class="color-details">
+            <div class="color-name small">neutral-950</div>
+            <div class="xsmall">#090d16</div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="h4"
+        style="margin-top: var(--space-lg); margin-bottom: var(--space-sm); font-weight: var(--fw-semibold);">Status
+        Mapped Colors</h3>
+      <div class="color-palette-grid">
+        <div class="color-swatch">
+          <div class="color-preview"
+            style="background-color: var(--color-info-bg); border-bottom: 4px solid var(--color-info-text);"></div>
+          <div class="color-details">
+            <div class="color-name small info" style="font-weight: var(--fw-semibold);">.info (Blue)</div>
+            <div class="xsmall muted">System / Info messages</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-preview"
+            style="background-color: var(--color-success-bg); border-bottom: 4px solid var(--color-success-text);">
+          </div>
+          <div class="color-details">
+            <div class="color-name small success" style="font-weight: var(--fw-semibold);">.success (Green)</div>
+            <div class="xsmall muted">Positive / Operational</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-preview"
+            style="background-color: var(--color-warning-bg); border-bottom: 4px solid var(--color-warning-text);">
+          </div>
+          <div class="color-details">
+            <div class="color-name small warning" style="font-weight: var(--fw-semibold);">.warning (Orange)</div>
+            <div class="xsmall muted">Attention / Warnings</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-preview"
+            style="background-color: var(--color-error-bg); border-bottom: 4px solid var(--color-error-text);"></div>
+          <div class="color-details">
+            <div class="color-name small error" style="font-weight: var(--fw-semibold);">.error (Red)</div>
+            <div class="xsmall muted">Critical / Failures</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Showcase Presentation Logic Only (Will be discarded in production) -->
+  <script>
+    // Section Navigation Dropdown
+    const navDropdown = document.getElementById('nav-dropdown');
+    navDropdown.addEventListener('change', (e) => {
+      const targetId = e.target.value;
+      if (targetId) {
+        const element = document.getElementById(targetId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+        // Reset dropdown back to placeholder
+        e.target.value = "";
+      }
+    });
+
+    // Theme Toggle UI Sync Handler
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleIcon = document.getElementById('theme-toggle-icon');
+    const themeToggleText = document.getElementById('theme-toggle-text');
+
+    // Sync theme UI initially using loaded CoreUI states
+    function syncThemeUI(theme) {
+      if (themeToggleIcon && themeToggleText) {
+        if (theme === 'dark') {
+          themeToggleIcon.textContent = '☀️';
+          themeToggleText.textContent = 'Light Mode';
+        } else {
+          themeToggleIcon.textContent = '🌙';
+          themeToggleText.textContent = 'Dark Mode';
+        }
+      }
+    }
+
+    // Listen for CoreUI theme changed events to keep UI in sync
+    window.addEventListener('themechanged', (e) => {
+      syncThemeUI(e.detail.theme);
+    });
+
+    // Initial sync
+    if (window.CoreUI && window.CoreUI.state) {
+      syncThemeUI(window.CoreUI.state.theme);
+    }
+
+    themeToggleBtn.addEventListener('click', () => {
+      window.toggleTheme();
+    });
+
+    // ── Overflow Debugger ───────────────────────────────────────
+    // Click the 🔍 Overflow button to highlight all elements wider
+    // than the viewport. Results also printed to the console.
+    document.getElementById('overflow-debug-btn').addEventListener('click', () => {
+      const vw = document.documentElement.clientWidth;
+      const offenders = [];
+      document.querySelectorAll('*').forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.right > vw || rect.left < 0) {
+          offenders.push(el);
+          el.dataset.overflowHighlight = 'true';
+          el.style.outline = '2px solid red';
+          el.style.outlineOffset = '-2px';
+        }
+      });
+      if (offenders.length === 0) {
+        console.log('✅ No overflow found.');
+        alert('✅ No horizontal overflow detected.');
+      } else {
+        console.group(`🚨 ${offenders.length} overflowing element(s)`);
+        offenders.forEach(el => {
+          const r = el.getBoundingClientRect();
+          console.log(el, `left:${r.left.toFixed(1)} right:${r.right.toFixed(1)} width:${r.width.toFixed(1)}`);
+        });
+        console.groupEnd();
+        alert(`🚨 ${offenders.length} overflowing element(s) highlighted in red. Check console for details.`);
+      }
+      // Auto-clear highlights after 5 seconds
+      setTimeout(() => {
+        document.querySelectorAll('[data-overflow-highlight]').forEach(el => {
+          el.style.outline = '';
+          el.style.outlineOffset = '';
+          delete el.dataset.overflowHighlight;
+        });
+      }, 5000);
+    });
+  </script>
+</body>
+
+</html>

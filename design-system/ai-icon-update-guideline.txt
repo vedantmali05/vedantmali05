@@ -1,0 +1,107 @@
+# Offline Lucide Icon Update Guidelines (For Humans, Team & AI Tools)
+
+This guide helps teammates easily add or update offline icons in the Core UI Design System, whether doing it manually, using a web-based utility, or using a chat-based AI tool (like ChatGPT, Claude, etc.) without terminal/workspace access.
+
+---
+
+## 1. How the System Works
+To ensure the UI is 100% offline-first and requires zero network requests, icons are defined inline in a dedicated stylesheet `icons.css` using URL-encoded SVG masks:
+* **Base class** (`.icon-lucide`): Handles display, vertical alignment, and currentColor mapping. By default, icons render at `16px` (`font-size: 16px; width: 1em; height: 1em;`).
+* **Icon class** (`.icon-[name]`): Specifies the inline URL-encoded mask image.
+
+Because we set `width: 1em; height: 1em;`, icons automatically inherit the font-size of their parent element (e.g., inside badges or text) or can be overridden using an inline `style="font-size: 24px;"` or custom class. Because they use CSS masking and set `background-color: currentColor;`, they inherit the color of their parent container (working seamlessly with hover, status styles like `.success`, `.error`, and themes).
+
+---
+
+## 2. Option A: Using any Web AI Tool (ChatGPT, Claude Web, etc.)
+If you are using a chat-based AI tool without code execution or workspace access, follow this quick copy-paste workflow:
+
+### Step 1: Copy this System Prompt
+Copy the prompt block below:
+```markdown
+Please convert the following SVG icon into a URL-encoded data URI for CSS Masking.
+
+First, check if the stylesheet file containing the current icons list (by convention, the standalone `icons.css` file) is present or provided. If no such file or section is available, ask the user to upload/share the current icon styles first so you can analyze them and append new icons without duplicates.
+
+Ensure that:
+1. Every XML tag and attribute is fully URL-encoded (e.g. '<' is replaced by '%3C', '>' by '%3E', '"' by '%22', and spaces by '%20').
+2. The stroke of the SVG is set to black (so CSS masking opacity works correctly).
+3. The output is provided as a drop-in CSS class in this exact format:
+
+.icon-[iconname] {
+  --svg-icon: url("data:image/svg+xml;charset=utf-8,[ENCODED_SVG]");
+}
+```
+---
+
+### Step 2: Paste and Send the Prompt with your SVG
+Paste the prompt into your AI chat, paste the raw SVG from Lucide.dev (or any custom SVG source), and state the icon name.
+*Example AI Input:*
+> [Paste Prompt Above]
+> Icon name: server-stack
+> SVG: <svg ...>...</svg>
+
+### Step 3: Copy-Paste the CSS Output
+The AI will give you the exact CSS block. Copy it and paste it at the bottom of the `icons.css` file.
+
+---
+
+## 3. Option B: Using an Online SVG Encoder (Manual Workflow)
+If you prefer not to use AI and want a direct utility:
+1. Copy your SVG from Lucide.dev.
+2. Go to an online SVG CSS encoder like: **https://yoksel.github.io/url-encoder/**
+3. Paste your SVG.
+4. Copy the generated `background-image: url("data:image/svg+xml,...");` value.
+5. Create your new icon class in `icons.css` using that value inside `--svg-icon`:
+   ```css
+   .icon-[name] {
+     --svg-icon: url("data:image/svg+xml,...");
+   }
+   ```
+
+---
+
+## 4. Option C: Manual Developer Workflow (JavaScript / Python)
+If you have access to a terminal or browser console:
+
+### JavaScript Console:
+Open your browser devtools console (F12) and run:
+```javascript
+const svg = `<svg ...>...</svg>`; // Paste SVG here
+console.log('.icon-name {\n  --svg-icon: url("data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg.trim().replace(/stroke="currentColor"/g, 'stroke="black"').replace(/\s+/g, ' ')) + '");\n}');
+```
+
+### Python:
+```bash
+python3 -c "import urllib.parse; svg='''<svg>...</svg>'''; print(urllib.parse.quote(svg.strip()))"
+```
+
+---
+
+## 5. Important Rules & Gotchas
+* **Icon Class Name Convention**: Always use all-lowercase, alphanumeric class names without hyphens or spaces (e.g., use `.icon-trendingup` instead of `.icon-trending-up`).
+* **Mask Color Compatibility**: The CSS mask uses the transparency/alpha channel of the SVG. Ensure that the SVG stroke/fill is set to an absolute solid color (like `stroke="black"`) inside the encoded SVG so the mask applies fully.
+* **Inheritance**: Do not define hardcoded colors inside the CSS class. Let `background-color: currentColor;` from `.icon-lucide` handle color inheritance.
+
+---
+
+## 6. Common Failure Modes (Why Icons Break)
+If icons appear as blank boxes or fail to render entirely, it is almost always due to one of these three syntax issues:
+1. **Unencoded `#` (Hash) Characters**:
+   If the SVG uses hex colors (like `stroke="#000000"` or `fill="#ffffff"`), the raw `#` symbol **must** be URL-encoded to `%23`. An unencoded `#` in a CSS Data URI acts as a fragment identifier, which truncates the URI and breaks the icon in Firefox and Chrome.
+   *Best Practice*: Use named colors like `stroke="black"` or `fill="none"` inside the SVG to avoid hex codes altogether.
+2. **Conflicting & Unencoded Double Quotes (`"`)**:
+   Since the CSS rule uses double quotes `url("data:...")`, any raw double quotes inside the SVG will prematurely close the CSS string and corrupt the stylesheet syntax.
+   *Best Practice*: Ensure all double quotes inside the SVG are URL-encoded as `%22`.
+3. **Missing or Mismatched Closing Quotes / Tags**:
+   Ensure every attribute has matching quotes (e.g., `stroke-linejoin="round"` encodes to `stroke-linejoin%3D%22round%22`). If a quote is missing (e.g., `round%20%3E` instead of `round%22%20%3E`), the SVG becomes invalid XML. Similarly, the SVG must end with `%3C/svg%3E` (which is `</svg>`), not `%3Csvg%3E` (which opens a new tag).
+
+---
+
+## 7. Browser Compatibility
+Is this CSS Masking method supported by all browsers?
+**Yes, fully supported by all modern desktop and mobile browsers** (Chrome, Firefox, Safari, Edge, iOS Safari, Android Chrome). To guarantee 100% compatibility:
+1. **Always Use Vendor Prefixes**: iOS Safari, macOS Safari, and older Blink browsers require the `-webkit-` prefix. You must define both `-webkit-mask-image` and `mask-image` (along with mask-size, repeat, and position properties).
+2. **Percent-Encode SVG Content**: Firefox strictly enforces the SVG specifications for Data URIs. While Chrome might tolerate raw `<` or `>`, Firefox requires them to be percent-encoded (`%3C` and `%3E`). Fully encoding the SVG string ensures it works universally.
+
+

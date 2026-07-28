@@ -1,0 +1,168 @@
+# Core UI Standard Design System - Guidelines & Workflow Context
+This file serves as a persistent context for any AI assistant to understand the goals, architecture, and current state of this project.
+
+---
+
+## 1. Project Goal
+Standardize and refactor a messy, disorganized, AI-generated frontend codebase by introducing a clean, modular, and unified vanilla design system. The system heavily focuses on:
+* Standardized CSS variable tokens.
+* Modern typography scales and spacing.
+* Comprehensive light and dark mode mappings.
+* Numeric-heavy components (like metric cards, tables, dashboards, and badges).
+* Cohesive, professional status colors.
+
+---
+
+### 3. Core Files & Directory Structure
+* **`css/main.css`**: The single source of truth for variables, reset rules, utilities, and core components (like badges, form inputs).
+* **`css/icons.css`**: Central source of truth for all URL-encoded offline Lucide icon mask definitions and the `.icon-lucide` base class.
+* **`showcase/showcase.css`**: Contains page-specific showcase/demo styles (sticky header, stats cards, detail cards, layout grids) to keep the core styling in `css/` clean and reusable for deployment.
+* **`fonts/`**: Self-hosted font assets (Manrope font weights 400-700) for complete offline-first operation.
+* **`js/constants.js`**: Global configurations, constants, theme keys, and CSS/HTML selector mappings.
+* **`js/main.js`**: Core design system logic including motion-detection, LocalStorage-backed theme initialization, and native dialog event binders/helpers.
+* **`standard.html`**: A showcase page used to preview components, typography, color palettes, and layouts. Contains inline showcase-specific JavaScript modules (navigation, theme UI updates, and overflow debugger) to avoid polluting production JS files.
+
+---
+
+## 4. Design Tokens & Styling Rules
+To maintain styling integrity, always follow these rules:
+
+### A. Theme Mappings (Strict Variable Rule)
+Never hardcode hex/rgb colors in element selectors. Instead, map element styles to theme variables:
+* **Backgrounds**: `--color-bg-primary`, `--color-bg-secondary`, `--color-bg-tertiary`
+* **Text**: `--color-text-primary`, `--color-text-secondary`, `--color-text-muted`
+* **Borders**: `--color-border`
+* **Statuses**: Map semantic vars (e.g. `--color-success-bg`, `--color-success-text`, `--color-success-border`) to absolute brand colors.
+* Make sure all colors have a corresponding fallback for both Light and Dark modes (`[data-theme="dark"]`).
+
+### B. Typography & Numeric Data
+* The design system standardizes on **Manrope** as the primary font family for clean numeric and typographic rendering.
+* Numeric values should use clean, bold styling (`--fw-bold`), tight line heights (`1.1` to `1.2`), and close letter-spacing (`-0.02em` to `-0.03em`) for high readability.
+* **Compact Presentation**: Numeric components must remain compact and structured. Stats cards use a 180px fallback width (if active) and a 3px progress track. Detail cards (`.detail-card`) feature customizable dashed/dotted dividers and rounded borders.
+
+
+### C. Status System
+Always map standard status colors to the following semantic classes:
+* **Blue**: `.info` (System updates / details)
+* **Green**: `.success` (Healthy / completed actions)
+* **Orange**: `.warning` (Attention / thresholds)
+* **Red**: `.error` (Failures / critical states)
+* Use the `.badge` component wrapper to show indicators. Supported configurations:
+  * **Statuses**: `.info`, `.success`, `.error`, `.warning`
+  * **Variants**:
+    * *Default (no modifier class)*: Transparent background, no outline, text and icon in status color.
+    * `.outlined`: Border and icon in status color, neutral text color.
+    * `.emphasized`: Faint status background, border, text, and icon in status colors.
+    * `.solid`: Solid dark status background, status border, and white text/icon.
+  * **Sizes**: `.sz-xsmall`, `.sz-small` (default), `.sz-large`.
+  * **Icons**: Optional start/end icons (e.g., `<span class="badge emphasized success"><span class="icon-lucide icon-check"></span>Success</span>`).
+* Use the `.status-card` component wrapper for content banners, alerts, or inline callout cards. Supported configurations:
+  * **Layout**: Flex container with start-aligned elements (`align-items: flex-start`), keeping the icon correctly anchored at the top-left for multi-line text blocks.
+  * **Statuses**: `.info`, `.success`, `.error`, `.warning`
+  * **Variants**:
+    * *Default (no modifier class)*: Transparent background, no outline, text and icon in status color.
+    * `.outlined`: Border and icon in status color, neutral text color.
+    * `.emphasized`: Faint status background, border, text, and icon in status colors.
+  * **Sizes**: `.xsmall` (very small helper text style, matches input error/info messages), `.small` (compact banner), `.medium` (standard banner / default), and `.large` (prominent alert banner).
+
+### D. CSS/Framework Policy
+* **No TailwindCSS / CSS Frameworks**: Use Vanilla CSS for custom control.
+* Keep HTML markup semantic, structured, and free of arbitrary styling classes.
+
+### E. Form Input Design Rules
+* **Wrapper**: `.form-group` manages vertical layout of label, container, and helper text.
+* **Label**: `.form-label` shifts color reactively when input is focused, errored, or disabled.
+* **Input Container**: `.input-container` encapsulates optional start/end elements and the text field. It manages the active border outline, focus shadows, hover highlights, and status states (error, warning, success, disabled).
+* **Addons**: `.input-addon.start` and `.input-addon.end` contain supplementary text/icons, with borders synchronized with the container's focus/state styles.
+* **Select Dropdown**: `.select-field` inherits input styles, disables default browser styling (`appearance: none`), and includes a light/dark mode custom SVG arrow background.
+* **Textarea**: `.textarea-field` inherits input styles, supports vertical resizing only, and sets a custom min-height.
+* **Checkbox & Radio**: Uses `.form-check` label wrapper and `.form-check-input` styled dynamically via `appearance: none` and SVG checkmark/dot background resources on `:checked`.
+* **Choice Cards**: Large selectors structured as `.choice-card` that wrap a custom input and details. Parent container style responds dynamically using `:has(.choice-card-input:checked)` for borders and focus highlights.
+* **Helpers**: Use `.status-card.xsmall` (default-styled with a leading icon) for helper details, validation warnings, and error messages instead of plain text spans. Standard helpers can be neutral (no status modifier) or `.info`, validations should use `.error`, and success confirmations should use `.success`.
+
+### F. Showcase & Layout Organization Rules
+* **Showcase Order**: The sections in `standard.html` must follow this exact order from top to bottom: Future-Proof Inputs, Special Input Controls, Search Components, Selection Controls, Accordions, Dialogs, Status Cards, Status Badges, Stats, Tooltips, Offline Icons, Manrope Typescale, and Colors.
+* **Horizontal Column Gaps**: Any multi-column grid layouts (like inputs or card columns) must maintain a minimum spacing of `var(--space-xl)` (2rem) or `var(--space-2xl)` to ensure they do not touch horizontally.
+
+### G. Offline Icon Policy (CSS Masks)
+* **CSS Mask Implementation**: To ensure offline capability and zero external dependency, icons are defined inline in `icons.css` using URL-encoded SVG masks (`-webkit-mask-image` and `mask-image`).
+* **Dynamic Styling**: The `.icon-lucide` base class sets `background-color: currentColor`. This ensures icons dynamically scale and change color when their parent containers change status (e.g. badges, disabled inputs, hover states).
+* **SVG Design Constraints**:
+  * **Stroke/Fill Colors**: The SVG resource loaded via `url()` runs in a sandboxed context and cannot inherit standard CSS variables or `currentColor` directly inside the mask image. Therefore, you **must** replace `stroke="currentColor"` with a solid color like `stroke="black"` inside the SVG string. The color of the icon is controlled from the parent page by changing the element's CSS `background-color` (which *is* set to `currentColor` in `.icon-lucide`).
+  * **Strict Encoding Rules**:
+    1. **Quotes**: Wrap url values in double quotes, i.e., `url("data:...")`. To prevent syntax corruption, all double quotes inside the SVG must be percent-encoded to `%22`.
+    2. **Angle Brackets**: To support Firefox, `<` and `>` must be percent-encoded to `%3C` and `%3E`.
+    3. **Hashes**: Any `#` symbols inside the SVG (e.g., in hex color values) **must** be encoded to `%23`. Unencoded hashes act as URL fragments and will truncate the SVG, breaking rendering.
+    4. **XML Correctness**: Double check that tags are closed correctly (e.g. ending in `%3C/svg%3E` representing `</svg>`, not `%3Csvg%3E` representing `<svg>`).
+* **Browser Compatibility**: Declare both prefixed (`-webkit-mask-*`) and standard (`mask-*`) properties to ensure support across all mobile and desktop WebKit/Blink/Gecko browsers (Safari, iOS Safari, Chrome, Edge, Firefox). Fully encoding the SVG string guarantees compatibility with strict Gecko engines (Firefox).
+
+### H. Accordion Guidelines
+* **HTML5 Markup**: Implement accordions natively using `<details class="accordion-item">` and `<summary class="accordion-trigger">` elements. This provides native key accessibility (Tab focus, Space/Enter activation) and requires zero JavaScript.
+* **Header / Trigger**:
+  * Set `.accordion-trigger` to a flex layout with horizontal spacing, bold typography (`var(--fw-semibold)`), and a custom hover transition state.
+  * Hide browser default triangles utilizing `list-style: none` and `::-webkit-details-marker { display: none; }`.
+  * Support optional leading graphics (icons, labels, badges) inside a `.accordion-trigger-left` flex wrapper.
+  * Use a trailing `.accordion-chevron` (e.g. holding `.icon-chevrondown`) configured with a rotation transition (`transform: rotate(180deg)`) triggered when `details[open]` is active.
+* **Separation & Breathing Space**:
+  * When expanded, draw a thin 1px horizontal separator line (`border-top`) directly above the `.accordion-content`.
+  * Ensure the container has properly rounded edges (`var(--radius-md)`) and clean, breathing internal padding that does not cause claustrophobic text wrapping.
+* **Styling Variants**:
+  * `.outlined`: Features a visible border, light background, and is highlighted dynamically with a focus shadow on `[open]`.
+  * `.subtle`: Blends flat against page backgrounds using background tints (`var(--color-bg-secondary)`) instead of heavy border lines.
+  * `.accordion-group`: A container that clusters multiple items together, aligning borders and corner radius parameters for a single panel appearance.
+
+### I. Stat Component Guidelines
+* **Architecture**: A flex-based column component (`.stat`) managing a stack of: label, valueText, optional badge/trend indicator, and helper text.
+* **Label**: `.stat-label` uses small, secondary/muted color and uppercase tracking for modern aesthetic.
+* **Info Trigger Tooltip**: A small interactive info icon trigger (`.stat-info-trigger`) can sit adjacent to the label, showing a floating custom CSS tooltip (`.stat-tooltip`) on hover.
+* **Value & Unit Suffix**: `.stat-value` manages the large bold numeric text. Unit suffixes (e.g., `k`, `%`, `$`) can be embedded inside using `.stat-unit` to ensure smaller, baseline-aligned styling.
+* **Trend Indicator**: Upward/downward changes are styled using either compact badges (`.badge.sz-xsmall.success` / `.badge.sz-xsmall.error`) or inline status text templates (`.stat-trend-text.success` / `.stat-trend-text.error`).
+* **Card Container**: `.stat-card` provides an optional padded border frame wrapping a stat block for a clean card aesthetic.
+
+### J. Tooltip Component Guidelines
+* **Trigger**: Wrap triggers in a `.tooltip-trigger` class, configuring it as a relative-positioned inline-flex container.
+* **Tooltip**: The child element `.tooltip` uses absolute positioning, standard primary text background, and a clean fade-in and scale translation transition.
+* **Directions & Arrow Alignment**:
+  * `.tooltip-top`: Positioned above the trigger, features a downward-pointing arrow center-aligned at the bottom boundary.
+  * `.tooltip-bottom`: Positioned below the trigger, features an upward-pointing arrow center-aligned at the top boundary.
+  * `.tooltip-left`: Positioned to the left of the trigger, features a rightward-pointing arrow vertically center-aligned at the right boundary.
+  * `.tooltip-right`: Positioned to the right of the trigger, features a leftward-pointing arrow vertically center-aligned at the left boundary.
+
+### K. Dialog Component Guidelines
+* **Element**: Uses the native HTML `<dialog>` element with `.dialog-box` class. Open with `.showModal()` (modal) or `.show()` (non-modal).
+* **Structure**: Zero padding on `.dialog-box`. Separators bleed full width. Three children: `.dialog-header`, `.dialog-content`, `.dialog-footer`.
+  * `.dialog-header`: Flex row, sticky top; contains `.dialog-title-group` (title + optional subtitle) and `.dialog-close-btn`.
+  * `.dialog-content`: `flex: 1 1 auto`, `overflow-y: auto` — the only scrollable zone.
+  * `.dialog-footer`: Flex row, sticky bottom; two children: `.dialog-footer-left` (danger/secondary) and `.dialog-footer-right` (primary/cancel).
+* **Sizing**: Set via `data-size="sm|md|lg|full"` attribute. Custom size via inline `style`. Sizes: sm=400px, md=560px, lg=800px, full=100vw/100vh.
+* **Scrim**: `::backdrop` handles overlay. Light mode: 50% slate, dark mode: 65% black. Includes `backdrop-filter: blur(2px)`.
+* **Mode**: Set via `data-modal="true|false"`. Modal: Esc closes, backdrop click does NOT close. Non-modal: Esc and backdrop click both close.
+* **Animation**: Open = slide-up + fade-in (`@starting-style`). Close = reverse. Mobile: bottom-sheet slides up from bottom edge.
+* **Accessibility**: Focus trap implemented for modal dialogs (Tab cycles within focusable elements). Close button uses `aria-label="Close"`.
+* **Mobile**: `@media (max-width: 600px)` overrides all dialog sizes to a full-width bottom sheet with `border-radius` only on top corners.
+
+## 5. Current State (As of June 2026)
+* [x] Core Typography & Spacing (including `--space-xl: 2rem`) defined.
+* [x] Neutral Gray & Status Color Mappings (Light & Dark theme overrides) operational.
+* [x] Reactive LocalStorage theme-toggle helper script in place.
+* [x] Finalized Manrope as primary design system font, downloading font files locally (`/fonts/`) for offline loading, and removing other font imports/helper classes.
+* [x] Flat Details Card layout (`.detail-card`) cloned in Manrope featuring thin dashed dividers, standard padding/border-radius configurations, and numeric tag callouts.
+* [x] Showcase sections rearranged to place the newest component section (Inputs) on top, followed by Typography and Color Palette.
+* [x] Separated test/showcase styles from `main.css` into `showcase.css` to keep deployment codebase clean.
+* [x] Implemented highly modular, future-proof input component styles (Text inputs, Custom Selects, Textareas, Checkboxes, Radios, and Choice Cards) in `main.css` with responsive states, start/end elements, error validation, and helper text.
+* [x] Implemented a self-contained, high-performance offline Lucide icon masking system (46 standard icons including layout, home, charts, system statuses, actions, custom chevron/enter/terminal behaviors, and arrows) inside `icons.css`.
+* [x] Added native HTML5/CSS Accordion component styles with Outlined, Subtle, and grouped layouts featuring zero-JS chevron rotation and divider triggers.
+* [x] Replicated Chakra UI Stat component architecture (including simple, tooltip-assisted, badge-oriented, and card panel variants) directly inside standard.html and integrated into the global design system.
+* [x] Implemented a pure-CSS tooltip component with support for top, bottom, left, and right directions, arrow alignment, and hover/focus transitions.
+* [x] Implemented a fully-spec-compliant Dialog component (7 use-case variants) using native `<dialog>` element with modal/non-modal modes, size presets (sm/md/lg/full/custom), sticky header/footer, scrollable content, slide+fade animation, mobile bottom-sheet, Esc/backdrop-click handling, and keyboard focus trapping.
+* [x] Refactored JavaScript into clean, decoupled, and reusable ES modules (`constants.js` and `main.js`), with all showcase-specific scripts moved inline to `standard.html`. The core files communicate with custom presentation elements via a decoupled CustomEvent (`themechanged`), ensuring zero dependencies and zero console errors when copying the design system into a production codebase.
+* [x] Organized codebase assets into dedicated, clean folder directories: `/css/` (containing core reusable stylesheets only, making it copy-paste ready as a standalone asset), `/js/` (containing decoupled core modules), `/fonts/` (containing self-hosted assets), and `/showcase/` (containing showcase-only stylesheets). Corrected internal and HTML-level references to prevent dependency breakage.
+* [x] Implemented a premium dark-themed Toast Notification system in `main.css` and `main.js` with vertical stacking, status variants (.info, .success, .error, .warn), custom icons/actions, and mobile-responsive layouts.
+* [x] Standardized button component styles (.btn, .primary, .subtle, .error, .outlined, .sz-small) in `main.css` for consistent interactive UI actions.
+
+## Missing now
+* [x] Dropdown Menu (Floating): Interactive overlays containing a list of actions or links:
+Position alignment (top/bottom/left/right) relative to triggers.
+Click-outside detector to dismiss the dropdown.
+* [x] Popover / Floating Card: Popups triggered by hover/click displaying rich HTML elements (e.g., hover-cards for user profiles).
+* [x] Empty State Layout: Standardized layout with a centered layout (icon/illustration, title, description, and action button) to show when tables, lists, or search results are empty.
