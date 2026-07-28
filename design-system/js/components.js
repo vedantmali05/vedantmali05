@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Generic auto-binds for standard select pairs
-  bindSelectDisplaySync("gatewaySelect", "gatewayDisplayVal", "No item selected");
+  bindSelectDisplaySync("primarySelect", "primaryDisplayVal", "No item selected");
   bindSelectDisplaySync("itemSelect", "itemDisplayVal", "No item selected");
   bindSelectDisplaySync("optionSelect", "optionDisplayVal", "No option selected");
 });
@@ -261,678 +261,56 @@ function createActionBar(options = {}) {
  * @param {string|HTMLElement} container - The container selector or element.
  * @param {string} title - The report title (e.g., 'Load Test Report' or 'Trend Report').
  */
-function reportMetadataHeader(container, title, footerHtml) {
-  const el = typeof container === 'string' ? document.getElementById(container) : container;
-  if (!el) return;
-
-  const keys = window.STORAGE_KEYS || {};
-  const compName = localStorage.getItem(keys.COMPANY_NAME) || 'App';
-  const compAddress = localStorage.getItem(keys.COMPANY_ADDRESS) || '';
-  const compLogo = localStorage.getItem(keys.COMPANY_LOGO) || '';
-
-  el.innerHTML = `
-    <section class="report-metadata-header">
-      <div>
-        <p class="h4">${escapeHtml(compName)}</p>
-        ${compAddress ? `<p class="small muted">${escapeHtml(compAddress)}</p>` : ''}
-        <p>${title}</p>
-      </div>
-      ${compLogo ? `<img src="${escapeHtml(compLogo)}" class="report-logo" alt="Company Logo" onerror="this.style.display='none'">` : ''}
-    </section>
-
-    <div class="report-grid-layout">
-      <!-- Test Details -->
-      <section class="report-section">
-        <h2 class="h4 muted">Test Details</h2>
-        <dl class="details-list">
-          <div class="details-row">
-            <dt>Test Id</dt>
-            <dd id="infoTestId">—</dd>
-          </div>
-          <div class="details-row">
-            <dt>Gateway Id</dt>
-            <dd id="infoGatewayId">—</dd>
-          </div>
-          <div class="details-row">
-            <dt>Cycle Name</dt>
-            <dd id="infoCycleName">—</dd>
-          </div>
-          <div class="details-row">
-            <dt>Status</dt>
-            <dd id="infoStatusContainer">—</dd>
-          </div>
-          <div class="details-row">
-            <dt>Remark</dt>
-            <dd id="infoRemark">—</dd>
-          </div>
-        </dl>
-      </section>
-
-      <!-- DG & Engine Details -->
-      <section class="report-section">
-        <h2 class="h4 muted">DG & Engine Details</h2>
-        <dl class="details-list">
-          <div class="details-row">
-            <dt>Dg Rating</dt>
-            <dd id="infoDgRating">—</dd>
-          </div>
-          <div class="details-row">
-            <dt>Eng Model</dt>
-            <dd id="infoEngineModel">—</dd>
-          </div>
-          <div class="details-row">
-            <dt>Alt Model</dt>
-            <dd id="infoAltModel">—</dd>
-          </div>
-          <div class="details-row">
-            <dt>Eng Sr No</dt>
-            <dd id="infoEngineSr">—</dd>
-          </div>
-          <div class="details-row">
-            <dt>Alt Sr No</dt>
-            <dd id="infoAltSr">—</dd>
-          </div>
-        </dl>
-      </section>
-
-      <!-- Customer & Operator -->
-      <section class="report-section">
-        <h2 class="h4 muted">Customer & Operator</h2>
-        <dl class="details-list">
-          <div class="details-row">
-            <dt>Customer</dt>
-            <dd id="infoCustomer">—</dd>
-          </div>
-          <div class="details-row">
-            <dt>Ope Name</dt>
-            <dd id="infoOperator">—</dd>
-          </div>
-          <div class="details-row">
-            <dt>Ope Mobile</dt>
-            <dd id="infoMobile">—</dd>
-          </div>
-        </dl>
-      </section>
-
-      <!-- Timeline & Duration -->
-      <section class="report-section full-width">
-        <h2 class="h4 muted">Timeline & Duration</h2>
-        <dl class="details-row">
-          <div>
-            <dt>Created At</dt>
-            <dd id="infoCreatedAt">—</dd>
-          </div>
-          <span class="separator"></span>
-          <div>
-            <dt>Started At</dt>
-            <dd id="infoStartedAt">—</dd>
-          </div>
-          <span class="separator"></span>
-          <div>
-            <dt>Last Updated</dt>
-            <dd id="infoLastUpdatedTime">—</dd>
-          </div>
-          <span class="separator"></span>
-          <div>
-            <dt>Duration</dt>
-            <dd id="infoDuration">—</dd>
-          </div>
-        </dl>
-      </section>
-    </div>
-
-    ${footerHtml ? `<div class="report-actions-footer">${footerHtml}</div>` : ''}
-  `;
-};
-
 /**
- * Report Metadata Editor Dialog component.
- */
-reportMetadataEditorDialog = {
-  init(container, options = {}) {
-    const el = typeof container === 'string' ? document.getElementById(container) : container;
-    if (!el) return;
-
-    const dialogId = options.dialogId || 'editDetailsDialog';
-    const formId = options.formId || 'editDetailsForm';
-    const saveBtnId = options.saveBtnId || 'saveDetailsBtn';
-
-    el.innerHTML = `
-      <div class="dialog-scrim" id="${dialogId}" data-modal="true" role="dialog" aria-modal="true" aria-labelledby="${dialogId}-title">
-        <div class="dialog-box" data-size="lg">
-          <div class="dialog-header">
-            <div class="dialog-title-group">
-              <h3 class="dialog-title" id="${dialogId}-title">Edit DG/Customer details</h3>
-              <p class="dialog-subtitle" id="${dialogId}-subtitle">Update parameters for this test cycle</p>
-            </div>
-            <button class="btn icon ghost" onclick="closeDialog('${dialogId}')" aria-label="Close">
-              <span class="icon-lucide icon-x"></span>
-            </button>
-          </div>
-          <div class="dialog-content dialog-content-scrollable">
-            <form id="${formId}" class="form-flex-col" onsubmit="event.preventDefault();">
-              <!-- Test Details -->
-              <div>
-                <h4 class="form-section-title">Test Details</h4>
-                <div class="form-grid">
-                  <div class="form-group">
-                    <label class="form-label" for="input-cycleName">
-                      Cycle Name
-                      <div class="popover trigger-hover">
-                        <span class="icon-lucide icon-info"></span>
-                        <div class="popover-card align-top-center">Identifies this specific test execution cycle.</div>
-                      </div>
-                    </label>
-                    <div class="input-container">
-                      <input type="text" id="input-cycleName" class="input-field" name="cycleName" placeholder="Enter cycle name">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="input-description">
-                      Description
-                      <div class="popover trigger-hover">
-                        <span class="icon-lucide icon-info"></span>
-                        <div class="popover-card align-top-center">Brief summary or objectives of the test.</div>
-                      </div>
-                    </label>
-                    <div class="input-container">
-                      <input type="text" id="input-description" class="input-field" name="description" placeholder="Enter description">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="input-remark">
-                      Remark
-                      <div class="popover trigger-hover">
-                        <span class="icon-lucide icon-info"></span>
-                        <div class="popover-card align-top-center">Any observations, notes, or comments.</div>
-                      </div>
-                    </label>
-                    <div class="input-container">
-                      <input type="text" id="input-remark" class="input-field" name="remark" placeholder="Enter remark">
-                    </div>
-                  </div>
-                  <div class="form-group grid-col-full">
-                    <label class="form-label">
-                      Status
-                      <div class="popover trigger-hover">
-                        <span class="icon-lucide icon-info"></span>
-                        <div class="popover-card align-top-center">Toggles the visibility and operational state of the cycle.</div>
-                      </div>
-                    </label>
-                    <div class="choice-card-row">
-                      <label class="choice-card">
-                        <input type="radio" name="status" class="form-check-input choice-card-input" value="Active">
-                        <div class="choice-card-content">
-                          <span class="choice-card-title">Active</span>
-                        </div>
-                      </label>
-                      <label class="choice-card">
-                        <input type="radio" name="status" class="form-check-input choice-card-input" value="Deactive">
-                        <div class="choice-card-content">
-                          <span class="choice-card-title">Deactive</span>
-                        </div>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Configuration Details -->
-              ${options.showConfigFields ? `
-              <div>
-                <h4 class="form-section-title">Configuration Details</h4>
-                <div class="form-grid">
-                  <div class="form-group">
-                    <label class="form-label" for="input-configFile">
-                      Configuration File *
-                      <div class="popover trigger-hover">
-                        <span class="icon-lucide icon-info"></span>
-                        <div class="popover-card align-top-center">Enter configuration file name.</div>
-                      </div>
-                    </label>
-                    <div class="input-container">
-                      <input type="text" id="input-configFile" class="input-field" name="configFile" value="confiqw.json" placeholder="e.g. confiqw_v1.json" required>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="input-slaveId">
-                      Select Slave ID *
-                      <div class="popover trigger-hover">
-                        <span class="icon-lucide icon-info"></span>
-                        <div class="popover-card align-top-center">Enter Modbus slave device identifier.</div>
-                      </div>
-                    </label>
-                    <div class="input-container">
-                      <input type="number" id="input-slaveId" class="input-field" name="slaveId" placeholder="Enter Slave ID" min="1" step="1">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="input-mapping">
-                      Trends Config File
-                      <div class="popover trigger-hover">
-                        <span class="icon-lucide icon-info"></span>
-                        <div class="popover-card align-top-center">Enter trends configuration mapping file name.</div>
-                      </div>
-                    </label>
-                    <div class="input-container">
-                      <input type="text" id="input-mapping" class="input-field" name="mapping" placeholder="e.g. report-schneider-mapping.json">
-                    </div>
-                  </div>
-                </div>
-              </div>
-              ` : ''}
-
-              <!-- Customer & Operator -->
-              <div>
-                <h4 class="form-section-title">Customer & Operator</h4>
-                <div class="form-grid">
-                  <div class="form-group">
-                    <label class="form-label" for="input-customer">
-                      Customer
-                      <div class="popover trigger-hover">
-                        <span class="icon-lucide icon-info"></span>
-                        <div class="popover-card align-top-center">Client or organization requesting the test.</div>
-                      </div>
-                    </label>
-                    <div class="input-container">
-                      <input type="text" id="input-customer" class="input-field" name="customer" placeholder="Enter customer name">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="input-operatorName">
-                      Operator Name
-                      <div class="popover trigger-hover">
-                        <span class="icon-lucide icon-info"></span>
-                        <div class="popover-card align-top-center">Full name of the technician running the test.</div>
-                      </div>
-                    </label>
-                    <div class="input-container">
-                      <input type="text" id="input-operatorName" class="input-field" name="operatorName" placeholder="Enter operator name">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="input-operatorMobile">
-                      Operator Mobile
-                      <div class="popover trigger-hover">
-                        <span class="icon-lucide icon-info"></span>
-                        <div class="popover-card align-top-center">Technician contact number for coordination.</div>
-                      </div>
-                    </label>
-                    <div class="input-container">
-                      <input type="text" id="input-operatorMobile" class="input-field" name="operatorMobile" placeholder="Enter operator mobile">
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- DG & Engine Details -->
-              <div>
-                <h4 class="form-section-title">DG & Engine Details</h4>
-                <div class="form-grid">
-                  <div class="form-group">
-                    <label class="form-label" for="input-dgRating">
-                      DG Rating
-                      <div class="popover trigger-hover">
-                        <span class="icon-lucide icon-info"></span>
-                        <div class="popover-card align-top-center">Generator rating capacity (kVA).</div>
-                      </div>
-                    </label>
-                    <div class="input-container">
-                      <input type="text" id="input-dgRating" class="input-field" name="dgRating" placeholder="Enter DG rating">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="input-engineModel">
-                      Engine Model
-                      <div class="popover trigger-hover">
-                        <span class="icon-lucide icon-info"></span>
-                        <div class="popover-card align-top-center">Model/specification series of the generator engine.</div>
-                      </div>
-                    </label>
-                    <div class="input-container">
-                      <input type="text" id="input-engineModel" class="input-field" name="engineModel" placeholder="Enter engine model">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="input-alternatorModel">
-                      Alternator Model
-                      <div class="popover trigger-hover">
-                        <span class="icon-lucide icon-info"></span>
-                        <div class="popover-card align-top-center">Model/specification series of the alternator.</div>
-                      </div>
-                    </label>
-                    <div class="input-container">
-                      <input type="text" id="input-alternatorModel" class="input-field" name="alternatorModel" placeholder="Enter alternator model">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="input-engineSrNo">
-                      Engine SR No
-                      <div class="popover trigger-hover">
-                        <span class="icon-lucide icon-info"></span>
-                        <div class="popover-card align-top-center">Unique factory serial number of the engine.</div>
-                      </div>
-                    </label>
-                    <div class="input-container">
-                      <input type="text" id="input-engineSrNo" class="input-field" name="engineSrNo" placeholder="Enter engine SR number">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="input-alternatorSrNo">
-                      Alternator SR No
-                      <div class="popover trigger-hover">
-                        <span class="icon-lucide icon-info"></span>
-                        <div class="popover-card align-top-center">Unique factory serial number of the alternator.</div>
-                      </div>
-                    </label>
-                    <div class="input-container">
-                      <input type="text" id="input-alternatorSrNo" class="input-field" name="alternatorSrNo" placeholder="Enter alternator SR number">
-                    </div>
-                  </div>
-                  <div class="form-group grid-col-full">
-                    <label class="form-label">
-                      Start/Stop
-                      <div class="popover trigger-hover">
-                        <span class="icon-lucide icon-info"></span>
-                        <div class="popover-card align-top-center">Triggers the start/stop cycle sequence.</div>
-                      </div>
-                    </label>
-                    <div class="choice-card-row">
-                      <label class="choice-card">
-                        <input type="radio" name="startStop" class="form-check-input choice-card-input" value="Start">
-                        <div class="choice-card-content">
-                          <span class="choice-card-title">Start</span>
-                        </div>
-                      </label>
-                      <label class="choice-card">
-                        <input type="radio" name="startStop" class="form-check-input choice-card-input" value="Stop">
-                        <div class="choice-card-content">
-                          <span class="choice-card-title">Stop</span>
-                        </div>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-          <div class="dialog-footer">
-            <div class="dialog-footer-left">
-              <button type="button" class="btn ghost danger" onclick="closeDialog('${dialogId}')">Cancel</button>
-            </div>
-            <div class="dialog-footer-right">
-              <button type="button" class="btn primary" id="${saveBtnId}">Save Changes</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-
-    // Bind event listeners
-    const form = document.getElementById(formId);
-    const saveBtn = document.getElementById(saveBtnId);
-
-    if (saveBtn) {
-      saveBtn.onclick = async () => {
-        if (typeof options.onSave === 'function') {
-          await options.onSave(form);
-        }
-      };
-    }
-  },
-
-  populate(formId, meta = {}) {
-    const form = typeof formId === 'string' ? document.getElementById(formId) : formId;
-    if (!form) return;
-
-    form.cycleName.value = meta.cycle_name ?? '';
-    form.description.value = meta.description ?? '';
-    form.customer.value = meta.cust ?? meta.customer ?? '';
-    form.operatorName.value = meta.op_nm ?? meta.operator_name ?? '';
-    form.operatorMobile.value = meta.op_mob ?? meta.mobile ?? '';
-    form.remark.value = meta.remark ?? '';
-    form.dgRating.value = meta.dg_rating ?? meta.rating ?? '';
-    form.engineModel.value = meta.engine_model ?? '';
-    form.alternatorModel.value = meta.alternator_model ?? meta.alt_model ?? '';
-    form.engineSrNo.value = meta.engine_srno ?? meta.engine_sr_no ?? '';
-    form.alternatorSrNo.value = meta.alternator_srno ?? meta.alt_sr_no ?? '';
-
-    if (form.configFile) {
-      form.configFile.value = meta.config_file ?? 'confiqw.json';
-    }
-    if (form.slaveId) {
-      form.slaveId.value = (meta.slave_id !== undefined && meta.slave_id !== null) ? meta.slave_id : '';
-    }
-    if (form.mapping) {
-      form.mapping.value = meta.mapping ?? 'report-schneider-mapping.json';
-    }
-
-    const statusVal = meta.status ? (meta.status.charAt(0).toUpperCase() + meta.status.slice(1).toLowerCase()) : 'Deactive';
-    const statusRadio = form.querySelector(`input[name="status"][value="${statusVal}"]`);
-    if (statusRadio) {
-      statusRadio.checked = true;
-    }
-
-    const startStopVal = meta.start_stop ? (meta.start_stop.charAt(0).toUpperCase() + meta.start_stop.slice(1).toLowerCase()) : 'Start';
-    const startStopRadio = form.querySelector(`input[name="startStop"][value="${startStopVal}"]`);
-    if (startStopRadio) {
-      startStopRadio.checked = true;
-    }
-  },
-
-  async save(formId, testCycleId, token, options = {}) {
-    const form = typeof formId === 'string' ? document.getElementById(formId) : formId;
-    if (!form) return false;
-
-    const payload = {
-      cycle_name: form.cycleName.value,
-      description: form.description.value,
-      cust: form.customer.value,
-      op_nm: form.operatorName.value,
-      op_mob: form.operatorMobile.value,
-      remark: form.remark.value,
-      status: form.status.value.toLowerCase(),
-      dg_rating: form.dgRating.value || '',
-      engine_model: form.engineModel.value,
-      alternator_model: form.alternatorModel.value,
-      engine_srno: form.engineSrNo.value,
-      alternator_srno: form.alternatorSrNo.value,
-      start_stop: form.startStop.value.toLowerCase(),
-      ...(form.configFile ? { config_file: form.configFile.value } : {}),
-      ...(form.slaveId ? { slave_id: form.slaveId.value ? Number(form.slaveId.value) : null } : {}),
-      ...(form.mapping ? { mapping: form.mapping.value } : {})
-    };
-
-    if (!payload.op_mob) {
-      Component.showToast("Operator mobile number is required.", "warning");
-      return false;
-    }
-    const mobileRegex = /^[6-9][0-9]{9}$/;
-    if (!mobileRegex.test(payload.op_mob)) {
-      Component.showToast("Enter a valid 10-digit mobile number.", "warning");
-      return false;
-    }
-
-    if (typeof options.onBeforeSubmit === 'function') {
-      const allowed = await options.onBeforeSubmit(payload);
-      if (!allowed) return false;
-    }
-
-    const saveBtn = options.saveBtn || document.getElementById(options.saveBtnId || 'saveDetailsBtn');
-    if (saveBtn) {
-      setButtonLoading(saveBtn, true);
-    }
-
-    try {
-      if (!window.TestCyclesAPI) throw new Error("TestCyclesAPI is not defined");
-      const body = await window.TestCyclesAPI.updateTestCycle(testCycleId, payload);
-
-      if (typeof options.onSuccess === 'function') {
-        await options.onSuccess(body, payload);
-      }
-      return true;
-    } catch (err) {
-      console.error(err);
-      Component.showToast('Failed to save details: ' + (err?.message || 'Unknown error'), 'error');
-      if (typeof options.onError === 'function') {
-        options.onError(err);
-      }
-      return false;
-    } finally {
-      if (saveBtn) {
-        setButtonLoading(saveBtn, false);
-      }
-    }
-  }
-};
-
-/**
- * Renders a unified HTML card for a test cycle.
+ * Renders a generic, reusable data summary card.
  * @param {Object} options Configuration options
- * @param {Object} options.tc The test cycle data object
- * @param {boolean} [options.showCheckbox=false] Whether to show selection checkbox
- * @param {boolean} [options.showSrNo=false] Whether to show serial number
- * @param {number|string} [options.srNo] Serial number value
- * @param {boolean} [options.showDescription=false] Whether to show description
- * @param {boolean} [options.showDuration=false] Whether to show duration
- * @param {boolean} [options.showLastUpdated=false] Whether to show last updated time
- * @param {boolean} [options.isCheckboxDisabled=false] Whether the checkbox is disabled
- * @param {string} [options.formattedDuration] Pre-formatted duration HTML
+ * @param {string} options.title Card title
+ * @param {string} [options.subtitle] Optional card subtitle/description
+ * @param {string} [options.statusLabel] Status badge text
+ * @param {string} [options.badgeClass='info'] Status badge CSS class (success, warning, error, info)
+ * @param {Array<{label: string, value: string}>} [options.metaItems] Metadata key-value pairs
  * @returns {string} HTML string for the card
  */
-function renderTestCycleCardHTML(options) {
+function renderSummaryCardHTML(options = {}) {
   const {
-    tc,
-    showCheckbox = false,
-    showSrNo = false,
-    srNo = '',
-    showDescription = false,
-    showDuration = false,
-    showLastUpdated = false,
-    isCheckboxDisabled = false,
-    formattedDuration = ''
+    title = 'Untitled Item',
+    subtitle = '',
+    statusLabel = 'Active',
+    badgeClass = 'info',
+    metaItems = []
   } = options;
 
-  const status = (tc.status || '').toLowerCase();
-  const statusLabel = status === 'active' ? 'Active' : 'Deactive';
-  const badgeClass = status === 'active' ? 'success' : 'warning';
-  const dotClass = status === 'active' ? 'success' : 'warning';
-
-  // Row 1
-  let row1LeftHTML = '';
-  if (showCheckbox) {
-    row1LeftHTML += `
-      <div class="checkbox-wrap">
-        <label class="table-checkbox-label">
-          <input type="checkbox" class="form-check-input row-checkbox" ${isCheckboxDisabled ? 'disabled' : ''}>
-        </label>
-      </div>
-    `;
-  }
-  if (showSrNo) {
-    row1LeftHTML += `<div class="card-srno font-code"><span>#${srNo || tc.sr_no || ''}</span></div>`;
-  }
-
-  row1LeftHTML += `
-    <div class="title-desc-group">
-      <div class="card-name" title="${tc.cycle_name || 'Unnamed Test Cycle'}">${tc.cycle_name || 'Unnamed Test Cycle'}</div>
-      ${showDescription ? `<div class="card-desc">${tc.description || 'No description provided.'}</div>` : ''}
-    </div>
-  `;
-
-  const row1HTML = `
-    <div class="card-row-top">
-      <div class="row-top-left">
-        ${row1LeftHTML}
-      </div>
-      <div class="row-top-right">
-        <span class="badge emphasized ${badgeClass} sz-small">
-          <span class="dot ${dotClass}"></span>
-          ${statusLabel}
-        </span>
-      </div>
-    </div>
-  `;
-
-  // Row 2: Key value row
-  // Items: Test ID, Duration, Created At, Last Updated
-  let keyValuesHTML = '';
-
-  // Test ID (both)
-  keyValuesHTML += `
-    <div class="meta-item">
-      <span class="label">Test ID</span>
-      <span class="value font-code">${tc.id || '—'}</span>
-    </div>
-  `;
-
-  // Duration (only on overview.html)
-  if (showDuration) {
-    keyValuesHTML += `
+  let metaHTML = '';
+  if (Array.isArray(metaItems) && metaItems.length > 0) {
+    metaHTML = metaItems.map(item => `
       <div class="meta-item">
-        <span class="label">Duration</span>
-        <span class="value">${formattedDuration || tc.duration || '—'}</span>
+        <span class="label">${escapeHtml(item.label)}</span>
+        <span class="value">${escapeHtml(item.value)}</span>
       </div>
-    `;
+    `).join('');
   }
-
-  // Created At (both)
-  let createdAtFormatted = tc.created_at || '—';
-  if (createdAtFormatted && createdAtFormatted !== '—' && !showCheckbox) {
-    // If not on test-cycles.html (i.e. overview.html), format it
-    createdAtFormatted = formatDateTime(tc.created_at, 'toLocaleString');
-  }
-  keyValuesHTML += `
-    <div class="meta-item">
-      <span class="label">Created At</span>
-      <span class="value">${createdAtFormatted}</span>
-    </div>
-  `;
-
-  // Last Updated (only on test-cycles.html)
-  if (showLastUpdated) {
-    keyValuesHTML += `
-      <div class="meta-item">
-        <span class="label">Last Updated</span>
-        <span class="value">${tc.last_updated || '—'}</span>
-      </div>
-    `;
-  }
-
-  const row2HTML = `
-    <div class="card-row-mid">
-      ${keyValuesHTML}
-    </div>
-  `;
-
-  // Row 3
-  const row3HTML = `
-    <div class="card-row-footer">
-      <div class="card-arrow">
-        <i class="icon-lucide icon-arrowright"></i>
-      </div>
-    </div>
-  `;
 
   return `
     <div class="data-card">
-      ${row1HTML}
-      ${row2HTML}
-      ${row3HTML}
+      <div class="card-row-top">
+        <div class="row-top-left">
+          <div class="title-desc-group">
+            <div class="card-name" title="${escapeHtml(title)}">${escapeHtml(title)}</div>
+            ${subtitle ? `<div class="card-desc">${escapeHtml(subtitle)}</div>` : ''}
+          </div>
+        </div>
+        <div class="row-top-right">
+          <span class="badge emphasized ${badgeClass} sz-small">
+            <span class="dot ${badgeClass}"></span>
+            ${escapeHtml(statusLabel)}
+          </span>
+        </div>
+      </div>
+      ${metaHTML ? `<div class="card-row-mid">${metaHTML}</div>` : ''}
     </div>
   `;
-};;
+}
 
-/**
- * Renders HTML for the standardized page header.
- * @param {string} title - The page title.
- * @param {string} [rightSideHtml=''] - HTML content for the right-side controls beside the refresh button.
- * @param {string} [subtitle=''] - Optional subtitle under the title.
- * @param {string} [titleId=''] - Optional ID for the title H1 element.
- * @param {string} [refreshBtnId='refresh-btn'] - Optional ID for the refresh button (default: 'refresh-btn').
- * @param {boolean} [showRefreshBtn=false] - Optional flag to show or hide the refresh button (default: false).
- * @returns {string} The header element HTML.
- */
 function renderPageHeaderHTML(title, rightSideHtml = '', subtitle = '', titleId = '', refreshBtnId = 'refresh-btn', showRefreshBtn = false, icon = "") {
   const idAttr = titleId ? ` id="${titleId}"` : '';
   const subtitleHtml = `<div id="pageSubtitle" class="page-subtitle" style="display: none;"></div>`;
@@ -1438,7 +816,7 @@ function renderSearchBar(options = {}) {
 
     if (is500) {
       title = "Server Connection Error";
-      description = "A connection error occurred. Please verify that the gateway is online and try reloading.";
+      description = "A connection error occurred. Please verify your network connection and try reloading.";
     } else {
       title = "Access Denied / Loading Error";
       description = "Unable to load the page. Please verify your connection, login status, and try reloading.";
@@ -1552,74 +930,74 @@ function renderBrandPersona(containerOrSelector, companyName, username) {
 
 /**
  * Renders the HTML string for a unified Selector Card component.
- * Supports rendering a gateway selector and an optional slave selector.
+ * Supports rendering a primary selector and an optional secondary selector.
  * @param {Object} opts Configuration options
- * @param {boolean} [opts.showSlave=true] Whether to render the slave selector row
- * @param {string} [opts.gatewayCountId='companyGatewayCount'] ID for gateway count element
- * @param {string} [opts.gatewayDisplayValId='gatewayDisplayVal'] ID for gateway display value element
- * @param {string} [opts.gatewaySelectId='gatewaySelect'] ID for gateway select element
- * @param {string} [opts.slaveCountId='slaveCount'] ID for slave count element
- * @param {string} [opts.slaveDisplayValId='slaveDisplayVal'] ID for slave display value element
- * @param {string} [opts.slaveInputId='slaveInput'] ID for slave select element
+ * @param {boolean} [opts.showSecondary=true] Whether to render the slave selector row
+ * @param {string} [opts.primaryCountId='primaryItemCount'] ID for primary count element
+ * @param {string} [opts.primaryDisplayValId='primaryDisplayVal'] ID for primary display value element
+ * @param {string} [opts.primarySelectId='primarySelect'] ID for primary select element
+ * @param {string} [opts.secondaryCountId='secondaryCount'] ID for secondary count element
+ * @param {string} [opts.secondaryDisplayValId='secondaryDisplayVal'] ID for secondary display value element
+ * @param {string} [opts.secondarySelectId='secondarySelect'] ID for secondary select element
  * @returns {string} The constructed HTML string
  */
 function renderSelectorCardHTML({
-  showSlave = true,
+  showSecondary = true,
   isCompact = false,
-  gatewayCountId = 'companyGatewayCount',
-  gatewayDisplayValId = 'gatewayDisplayVal',
-  gatewaySelectId = 'gatewaySelect',
-  slaveCountId = 'slaveCount',
-  slaveDisplayValId = 'slaveDisplayVal',
-  slaveInputId = 'slaveInput'
+  primaryCountId = 'primaryItemCount',
+  primaryDisplayValId = 'primaryDisplayVal',
+  primarySelectId = 'primarySelect',
+  secondaryCountId = 'secondaryCount',
+  secondaryDisplayValId = 'secondaryDisplayVal',
+  secondarySelectId = 'secondarySelect'
 } = {}) {
   let html = `
     <div class="selector-card">
-      <!-- Gateway Row Wrapper with Popover Support -->
-      <div class="popover trigger-hover" id="gatewayPopover">
-        <div class="selector-row${isCompact ? ' compact' : ''}" id="gatewayRowWrapper" style="width: 100%;">
+      <!-- Primary Row Wrapper with Popover Support -->
+      <div class="popover trigger-hover" id="primaryPopover">
+        <div class="selector-row${isCompact ? ' compact' : ''}" id="primaryRowWrapper" style="width: 100%;">
           <div class="selector-icon-circle">
             <i class="icon-lucide icon-network"></i>
           </div>
           <div class="selector-content">
             ${isCompact ? '' : `
             <span class="selector-label">
-              Select gateway (<span id="${gatewayCountId}">—</span> total)
+              Select item (<span id="${primaryCountId}">—</span> total)
             </span>
             `}
-            <span class="selector-value" id="${gatewayDisplayValId}">No gateway selected</span>
+            <span class="selector-value" id="${primaryDisplayValId}">No item selected</span>
           </div>
           <div class="selector-arrow">
             <i class="icon-lucide icon-chevrondown"></i>
           </div>
-          <select id="${gatewaySelectId}" class="select-overlay" disabled aria-disabled="true"></select>
+          <select id="${primarySelectId}" class="select-overlay" disabled aria-disabled="true"></select>
         </div>
       </div>
   `;
 
-  if (showSlave) {
+  if (showSecondary) {
     html += `
       <!-- Divider -->
-      <div class="selector-divider" id="slaveRowDivider"></div>
+      <div class="selector-divider" id="secondaryRowDivider"></div>
 
-      <!-- Slave Row Wrapper with Popover Support -->
-      <div class="popover trigger-hover" id="slavePopover">
-        <div class="selector-row${isCompact ? ' compact' : ''}" id="slaveRowWrapper" style="width: 100%;">
+      <!-- Secondary Row Wrapper with Popover Support -->
+      <div class="popover trigger-hover" id="secondaryPopover">
+        <div class="selector-row${isCompact ? ' compact' : ''}" id="secondaryRowWrapper" style="width: 100%;">
           <div class="selector-icon-circle">
             <i class="icon-lucide icon-linedotrighthorizontal"></i>
           </div>
           <div class="selector-content">
             ${isCompact ? '' : `
             <span class="selector-label">
-              Select slave (<span id="${slaveCountId}">—</span> total)
+              Select sub-item (<span id="${secondaryCountId}">—</span> total)
             </span>
             `}
-            <span class="selector-value" id="${slaveDisplayValId}">No slave selected</span>
+            <span class="selector-value" id="${secondaryDisplayValId}">No sub-item selected</span>
           </div>
           <div class="selector-arrow">
             <i class="icon-lucide icon-chevrondown"></i>
           </div>
-          <select id="${slaveInputId}" class="select-overlay"></select>
+          <select id="${secondarySelectId}" class="select-overlay"></select>
         </div>
       </div>
     `;
@@ -2111,14 +1489,14 @@ function renderSelectorCard(containerOrSelector, options = {}) {
   el.innerHTML = renderSelectorCardHTML(options);
 
   setTimeout(() => {
-    const gwSelectId = options.gatewaySelectId || 'gatewaySelect';
+    const gwSelectId = options.primarySelectId || 'primarySelect';
     const gwEl = el.querySelector('#' + gwSelectId) || document.getElementById(gwSelectId);
-    if (gwEl) attachCustomDropdown(gwEl, { placeholder: 'Search gateways...', searchThreshold: 5 });
+    if (gwEl) attachCustomDropdown(gwEl, { placeholder: 'Search items...', searchThreshold: 5 });
 
-    if (options.showSlave !== false) {
-      const slaveId = options.slaveInputId || 'slaveInput';
+    if (options.showSecondary !== false) {
+      const slaveId = options.secondarySelectId || 'secondarySelect';
       const slEl = el.querySelector('#' + slaveId) || document.getElementById(slaveId);
-      if (slEl) attachCustomDropdown(slEl, { placeholder: 'Search slaves...', searchThreshold: 5 });
+      if (slEl) attachCustomDropdown(slEl, { placeholder: 'Search items...', searchThreshold: 5 });
     }
   }, 10);
 }
@@ -2545,12 +1923,10 @@ function autoAttachSelects(root = document) {
 
 if (typeof window !== 'undefined') {
   window.Component = window.Component || {};
-  window.Component.setSlaveSelectorVisibility = setSlaveSelectorVisibility;
   window.Component.showEmptyStatePopover = showEmptyStatePopover;
   window.Component.clearPopover = clearPopover;
   window.Component.createActionBar = createActionBar;
-  window.Component.reportMetadataHeader = reportMetadataHeader;
-  window.Component.renderTestCycleCardHTML = renderTestCycleCardHTML;
+  window.Component.renderSummaryCardHTML = typeof renderSummaryCardHTML !== 'undefined' ? renderSummaryCardHTML : null;
   window.Component.renderPageHeaderHTML = renderPageHeaderHTML;
   window.Component.renderPageHeader = renderPageHeader;
   window.Component.generateDeterministicGradient = generateDeterministicGradient;
