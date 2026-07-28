@@ -23,7 +23,7 @@ Software Developer building full-stack web/mobile platforms, and software system
 
 ### 💼 Experience
 
-- **Junior Software Developer** @ Coexio (May 2026–Present)
+- **Junior Software Developer** @ Coexio Systems (May 2026–Present)
 - **UI/UX Design Intern** @ Accenture (Feb–Mar 2025)
 - **Software Trainee** @ Global Soft Labs (Jun–Jul 2024)
 
