@@ -97,6 +97,9 @@
             <option value="section-dialogs">Dialogs</option>
             <option value="section-status-cards">Status Cards</option>
             <option value="section-status-badges">Status Badges</option>
+            <option value="section-status-pills">Status Pills</option>
+            <option value="section-js-ui-cards">JS UI Cards</option>
+            <option value="section-interactive-json">Interactive JSON</option>
             <option value="section-stats">Stats</option>
             <option value="section-tooltips">Tooltips</option>
             <option value="section-toasts">Toasts</option>
@@ -1432,6 +1435,94 @@
       </div>
     </section>
 
+    <!-- Status Pills & Header Status Indicators -->
+    <section class="section" id="section-status-pills">
+      <h2 class="h2 section-title">Status Pills & Header Indicators</h2>
+      <div style="display: flex; flex-direction: column; gap: var(--space-lg);">
+        <h3 class="h4" style="font-weight: var(--fw-semibold); color: var(--color-text-secondary);">Header Status Pill Variants</h3>
+        <div style="display: flex; gap: var(--space-md); flex-wrap: wrap; align-items: center;">
+          
+          <div class="status-pill success">
+            <span class="icon-lucide icon-check"></span>
+            <div class="status-text">
+              <span class="status-title">Connected</span>
+              <span class="status-desc">Active Sync</span>
+            </div>
+          </div>
+
+          <div class="status-pill warning">
+            <span class="icon-lucide icon-clock3"></span>
+            <div class="status-text">
+              <span class="status-title">Syncing</span>
+              <span class="status-desc">Pending Batch</span>
+            </div>
+          </div>
+
+          <div class="status-pill error">
+            <span class="icon-lucide icon-x"></span>
+            <div class="status-text">
+              <span class="status-title">Offline</span>
+              <span class="status-desc">Reconnecting...</span>
+            </div>
+          </div>
+
+          <div class="status-pill info">
+            <span class="icon-lucide icon-bell"></span>
+            <div class="status-text">
+              <span class="status-title">Standby</span>
+              <span class="status-desc">Ready for Task</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- JS UI Cards & Summary Components -->
+    <section class="section" id="section-js-ui-cards">
+      <h2 class="h2 section-title">JS UI Cards & Dynamic Summary Components</h2>
+
+      <div style="display: flex; flex-direction: column; gap: var(--space-xl);">
+
+        <div>
+          <h3 class="h4" style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-bottom: var(--space-md);">
+            Data Summary Cards (renderSummaryCardHTML)
+          </h3>
+          <div id="summary-cards-demo-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-md);">
+          </div>
+        </div>
+
+        <div>
+          <h3 class="h4" style="font-weight: var(--fw-semibold); color: var(--color-text-secondary); margin-bottom: var(--space-md);">
+            Dual-Level Selector Cards (renderSelectorCardHTML)
+          </h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-lg);">
+            <div style="display: flex; flex-direction: column; gap: var(--space-xs);">
+              <span class="detail-card-label">Standard Dual Selector</span>
+              <div id="selector-card-standard-demo"></div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: var(--space-xs);">
+              <span class="detail-card-label">Compact Single Selector</span>
+              <div id="selector-card-compact-demo"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Interactive JSON Terminal -->
+    <section class="section" id="section-interactive-json">
+      <h2 class="h2 section-title">Interactive JSON Terminal</h2>
+      <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+        <h3 class="h4" style="font-weight: var(--fw-semibold); color: var(--color-text-secondary);">
+          Interactive Syntax Tree Viewer (renderInteractiveJSON)
+        </h3>
+        <div id="interactive-json-demo-container" class="code-terminal" style="padding: var(--space-md); border-radius: var(--radius-md); max-height: 280px; overflow: auto; font-family: monospace;">
+        </div>
+      </div>
+    </section>
+
     <!-- Stats Section -->
     <section class="section" id="section-stats">
       <h2 class="h2 section-title">Stats</h2>
@@ -2748,6 +2839,81 @@
       }, 5000);
     });
   </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Render Summary Cards Demo
+      const summaryContainer = document.getElementById('summary-cards-demo-container');
+      if (summaryContainer && window.Component && typeof window.Component.renderSummaryCardHTML === 'function') {
+        const card1 = window.Component.renderSummaryCardHTML({
+          title: 'Primary Service Cluster',
+          subtitle: 'US-East Production Deployment',
+          statusLabel: 'Active',
+          badgeClass: 'success',
+          metaItems: [
+            { label: 'Cluster ID', value: 'cls-88392' },
+            { label: 'Uptime', value: '99.98%' },
+            { label: 'Nodes', value: '16 Active' }
+          ]
+        });
+
+        const card2 = window.Component.renderSummaryCardHTML({
+          title: 'Staging Pipeline',
+          subtitle: 'EU-West Automated Build',
+          statusLabel: 'Syncing',
+          badgeClass: 'warning',
+          metaItems: [
+            { label: 'Pipeline ID', value: 'pipe-44021' },
+            { label: 'Duration', value: '4m 12s' },
+            { label: 'Status', value: 'Running Test Suite' }
+          ]
+        });
+
+        const card3 = window.Component.renderSummaryCardHTML({
+          title: 'Analytics Gateway',
+          subtitle: 'AP-South API Proxy',
+          statusLabel: 'Offline',
+          badgeClass: 'error',
+          metaItems: [
+            { label: 'Gateway ID', value: 'gw-10924' },
+            { label: 'Error Code', value: 'ERR_TIMEOUT_504' },
+            { label: 'Last Seen', value: '12m ago' }
+          ]
+        });
+
+        summaryContainer.innerHTML = card1 + card2 + card3;
+      }
+
+      // 2. Render Selector Cards Demo
+      if (window.Component && typeof window.Component.renderSelectorCard === 'function') {
+        window.Component.renderSelectorCard('#selector-card-standard-demo', { showSecondary: true });
+        window.Component.renderSelectorCard('#selector-card-compact-demo', { showSecondary: false, isCompact: true });
+      }
+
+      // 3. Render Interactive JSON Demo
+      const jsonContainer = document.getElementById('interactive-json-demo-container');
+      if (jsonContainer && window.Utils && typeof window.Utils.renderInteractiveJSON === 'function') {
+        const demoJSON = JSON.stringify({
+          app: "Standard Design System",
+          version: "2.4.0",
+          status: "active",
+          modules: ["components", "utils", "table", "states", "popups"],
+          config: {
+            theme: "dark",
+            animations: true,
+            maxRetries: 3
+          }
+        }, null, 2);
+
+        window.Utils.renderInteractiveJSON(jsonContainer, demoJSON, (type, idx, el) => {
+          if (window.Component && typeof window.Component.showToast === 'function') {
+            window.Component.showToast('Selected ' + type + ' at index ' + idx, 'info');
+          }
+        });
+      }
+    });
+  </script>
+
 </body>
 
 </html>
