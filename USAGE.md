@@ -6,15 +6,15 @@ This repository (`vedantmali05/vedantmali05`) serves as a central hub for essent
 
 ## 📄 Project Context Scaffolding
 
-This repo houses root-level **Context Files** (`IDENTITY.md`, `DECISIONS.md`, `CONTEXT.md`, and `AGENTS.md`) that can be copied directly into any new project repository.
+This repo houses **AGENTS.md** and the **.agents/** directory (`IDENTITY.md`, `DECISIONS.md`, and `CONTEXT.md`) that can be copied directly into any new project repository.
 
 ### How to Scaffold a New Project
-1. **Copy Context Files**: Copy `IDENTITY.md`, `DECISIONS.md`, `CONTEXT.md`, and `AGENTS.md` into your target project root directory.
+1. **Copy Context Files**: Copy `AGENTS.md` and the `.agents/` folder into your target project directory.
 2. **Context Documentation**:
-   - `IDENTITY.md`: Defines project metadata, purpose, and ownership.
-   - `DECISIONS.md`: Logs key technical and architectural decisions.
-   - `CONTEXT.md`: Outlines system architecture, dependencies, and environment setup.
-   - `AGENTS.md`: Entry point for AI agent workflow instructions.
+   - `AGENTS.md`: Entry point instructing agents to read `.agents/` and detailing governance rules.
+   - `.agents/IDENTITY.md`: Defines project metadata, purpose, and ownership.
+   - `.agents/DECISIONS.md`: Logs key technical and architectural decisions (updated only for major changes).
+   - `.agents/CONTEXT.md`: Outlines system architecture, dependencies, and environment setup (updated only for major changes).
 
 ---
 
