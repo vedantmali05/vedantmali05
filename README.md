@@ -37,12 +37,12 @@ Software Developer building full-stack web/mobile platforms, and software system
 
 ### ⚙️ Central Config Hub & Dotfiles Sync Utility
 
-This repository serves as a **central hub for essential developer configurations, AI agent scaffolding, and dotfiles backup**.
+This repository serves as a **central hub for essential developer configurations, project context scaffolding, and dotfiles backup**.
 
-- **AI Agent System Scaffold**: Copy `AGENTS.md` and `.agents/` to any project for a self-initializing AI setup with 6 specialized engineering roles and workflow signals.
-- **Dotfiles & Config Sync**: Backup and restore shell configs (`~/.bashrc`), agent skills, and tool presets across machines via `sync.sh` / `restore.sh`.
+- **Project Context Scaffold**: Copy `IDENTITY.md`, `DECISIONS.md`, `CONTEXT.md`, and `AGENTS.md` to any project for a streamlined AI & developer context structure.
+- **Dotfiles & Config Sync**: Backup and restore shell configs (`~/.bashrc`) and tool presets across machines via `sync.sh` / `restore.sh`.
 
-See **[USAGE.md](USAGE.md)** for complete scaffolding guides, workflow signals, and sync commands.
+See **[USAGE.md](USAGE.md)** for complete scaffolding guides and sync commands.
 
 ---
 

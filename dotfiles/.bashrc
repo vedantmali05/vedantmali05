@@ -295,25 +295,28 @@ EOF
     fi
 }
 
-# Open google-chrome to a URL or google search
+# Open browser to a URL or search query
 search() {
+    local browser="google-chrome"
     local new_window=0 kill_all=0 no_exit=0 incognito=0
-    local OPTIND opt
-    while getopts "hnkei" opt; do
+    local OPTIND opt choice
+    while getopts "hnkeib:" opt; do
         case "$opt" in
             h)
                 cat <<'EOF'
-search - open google-chrome to a URL or google search
-
-usage: search [-h] [-n] [-k] [-e] [-i] <query|url>
+search - open browser to a URL or search query
+usage: search [-h] [-b browser] [-n] [-k] [-e] [-i] <query|url>
   -h  show this help
-  -n  open in a new window (not existing session)
-  -k  kill ALL chrome sessions first, then open fresh (dangerous)
+  -b  select browser: chrome|c, brave|b, firefox|f (default: chrome)
+  -n  open in a new window
+  -k  kill ALL target browser sessions first
   -e  don't exit the terminal after launch
-  -i  open in incognito mode
+  -i  open in incognito / private mode
+  no query -> opens blank new tab/window
 EOF
                 return 0
                 ;;
+            b) choice="$OPTARG" ;;
             n) new_window=1 ;;
             k) kill_all=1 ;;
             e) no_exit=1 ;;
@@ -325,42 +328,50 @@ EOF
         esac
     done
     shift $((OPTIND - 1))
-
-    if [[ -z "$1" ]]; then
-        echo "search: missing query/url. try -h" >&2
+    case "$choice" in
+        brave|b)       browser="brave-browser" ;;
+        firefox|f)     browser="firefox" ;;
+        chrome|c|"")   browser="google-chrome" ;;
+        *)             browser="$choice" ;;
+    esac
+    if ! command -v "$browser" >/dev/null 2>&1; then
+        echo "search: browser '$browser' not found" >&2
         return 1
     fi
-    local q="$*"
-
-    if [[ "$q" =~ ^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(/.*)?$ ]] || [[ "$q" =~ ^https?:// ]]; then
-        [[ "$q" =~ ^https?:// ]] || q="https://$q"
-    else
-        local encoded
-        encoded=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1]))" "$q")
-        q="https://www.google.com/search?q=$encoded"
+    local q=""
+    if [[ -n "$1" ]]; then
+        q="$*"
+        if [[ "$q" =~ ^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(/.*)?$ ]] || [[ "$q" =~ ^https?:// ]]; then
+            [[ "$q" =~ ^https?:// ]] || q="https://$q"
+        else
+            local encoded
+            encoded=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1]))" "$q")
+            q="https://www.google.com/search?q=$encoded"
+        fi
     fi
-
     if [[ "$kill_all" -eq 1 ]]; then
-        read -rp "Kill ALL chrome sessions? [y/N] " confirm
+        read -rp "Kill ALL $browser sessions? [y/N] " confirm
         if [[ "$confirm" =~ ^[Yy]$ ]]; then
-            pkill -f google-chrome
+            pkill -f "$browser"
             sleep 1
         else
             echo "search: aborted -k"
             return 1
         fi
     fi
-
-    local chrome_args=()
-    [[ "$new_window" -eq 1 || "$kill_all" -eq 1 ]] && chrome_args+=(--new-window)
-    [[ "$incognito" -eq 1 ]] && chrome_args+=(--incognito)
-
-    setsid google-chrome "${chrome_args[@]}" "$q"
-
+    local flags=()
+    if [[ "$browser" == "firefox" ]]; then
+        [[ "$new_window" -eq 1 || "$kill_all" -eq 1 ]] && flags+=(--new-window)
+        [[ "$incognito" -eq 1 ]] && flags+=(--private-window)
+    else
+        [[ "$new_window" -eq 1 || "$kill_all" -eq 1 ]] && flags+=(--new-window)
+        [[ "$incognito" -eq 1 ]] && flags+=(--incognito)
+    fi
+    setsid "$browser" "${flags[@]}" ${q:+"$q"} >/dev/null 2>&1 &
     if [[ "$no_exit" -eq 1 ]]; then
         return 0
     else
-        sleep 10
+        sleep 1
         exit
     fi
 }

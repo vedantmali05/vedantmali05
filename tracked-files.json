@@ -3,15 +3,5 @@
     "label": "bashrc",
     "file_path": "~/.bashrc",
     "target_dir": "dotfiles"
-  },
-  {
-    "label": "agent-skills",
-    "file_path": "./.agents/skill-*.md",
-    "target_dir": ".agents"
-  },
-  {
-    "label": "agent-mcps",
-    "file_path": "./.agents/mcp-*.md",
-    "target_dir": ".agents"
   }
 ]
